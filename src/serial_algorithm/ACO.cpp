@@ -53,7 +53,7 @@ std::vector<std::pair<int, int>> getNeighbors(std::pair<int, int> current, std::
 std::vector<std::pair<int, int>> ACO(std::vector<std::vector<bool>> &maze,
                                      std::pair<int, int> start,
                                      std::pair<int, int> end, int numAnts = 30,
-                                     double iterations = 1000,
+                                     double iterations = 30,
                                      double pheromoneConst = 1000.0,
                                      double evaporationRate = 0.3,
                                      double alpha = 0.6)
@@ -63,12 +63,12 @@ std::vector<std::pair<int, int>> ACO(std::vector<std::vector<bool>> &maze,
     std::random_device rd;
     std::mt19937 gen(rd());
     // std::uniform_int_distribution<> randomDir(0, 3);
-    std::unordered_map<std::pair<std::pair<int, int>, std::pair<int, int>>, int, HashPair> pheromoneMap;
+    std::unordered_map<std::pair<std::pair<int, int>, std::pair<int, int>>, double, HashPair> pheromoneMap;
     std::vector<std::pair<int, int>> bestPath;
     int bestPathLength = INT_MAX;
     for (int i = 0; i < iterations; ++i)
     {
-        std::unordered_map<std::pair<std::pair<int, int>, std::pair<int, int>>, int, HashPair> pheromoneDelta;
+        std::unordered_map<std::pair<std::pair<int, int>, std::pair<int, int>>, double, HashPair> pheromoneDelta;
         for (int ant = 0; ant < numAnts; ++ant)
         {
             std::pair<int, int> current = start;

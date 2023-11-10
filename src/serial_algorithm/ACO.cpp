@@ -51,8 +51,6 @@ std::vector<std::pair<int, int>> getNeighbors(std::pair<int, int> current, std::
 }
 
 std::vector<std::pair<int, int>> ACO(std::vector<std::vector<bool>> &maze,
-                                     int m,
-                                     int n,
                                      std::pair<int, int> start,
                                      std::pair<int, int> end, int numAnts = 30,
                                      double iterations = 30,

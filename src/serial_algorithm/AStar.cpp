@@ -1,160 +1,115 @@
 #include <iostream>
 #include <vector>
-#include <cstdlib>
-#include <ctime>
-#include <math.h>
-#include <random>
-// #include <cstdlib>
-// #include <ctime>
-#include "../data_structure/data_structure_with_matrix.cpp"
+#include <queue>
+#include <algorithm>
+#include <climits>
 
-std::vector<std::pair<int, int>> AStar(std::vector<std::vector<bool>> &maze, int m, int n, std::pair<int, int> start, std::pair<int, int> end)
-const int maze_width = 20;
-const int maze_height = 20;
+struct Node {
+    int x, y; // Coordinates of the node
+    int g;    // Cost from the start node to current node
+    int h;    // Heuristic: estimated cost from current node to the goal
+    int f;    // Total cost: g + h
 
-int default_maze[maze_width * maze_height] = {
-    1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
-    1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,
-    1,0,0,1,1,0,0,0,1,0,1,0,1,0,1,0,0,0,1,1,
-    1,0,0,1,1,0,0,0,1,0,1,0,1,0,1,0,0,0,1,1,
-    1,0,1,1,1,1,0,0,1,0,1,0,1,1,1,1,0,0,1,1,
-    1,0,1,1,0,1,1,1,1,0,1,1,1,1,0,1,1,1,1,1,
-    1,0,0,0,0,1,1,1,1,1,1,0,0,0,0,1,1,1,1,1,
-    1,0,0,0,0,0,0,0,0,1,1,1,0,0,0,0,0,0,0,1,
-    1,0,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,
-    1,0,1,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,1,
-    1,0,1,1,1,1,0,1,1,0,1,1,1,1,1,1,1,1,1,1,
-    1,0,0,0,0,0,1,0,1,0,1,0,0,0,0,0,1,1,1,1,
-    1,0,1,0,1,0,0,0,1,0,1,0,1,0,1,0,0,0,1,1,
-    1,0,1,0,1,0,0,0,1,0,1,0,1,0,1,0,0,0,1,1,
-    1,0,1,1,1,1,0,0,1,0,1,0,1,1,1,1,0,0,1,1,
-    1,0,1,1,0,1,1,1,1,0,1,1,1,1,0,1,1,1,1,1,
-    1,0,0,0,0,1,1,1,1,1,1,0,0,0,0,1,1,1,1,1,
-    1,1,0,0,0,0,0,0,0,1,1,1,0,0,0,1,0,0,0,0,
-    1,0,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,
-    1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
+    bool operator>(const Node& other) const {
+        return f > other.f;
+    }
 };
 
-class Node
-{
-public:
-    int x;
-    int y;
-
-    Node()
-    {
-        x = y = 0;
-    }
-    Node(int px, int py)
-    {
-        x = px;
-        y = py;
-    }
-
-    float goalDistanceEstimation(Node &nodeGoal);
-    bool isGoal(Node &nodeGoal);
-    bool getSuccessors(std::vector<Node> &Neighbors, Node &parentNode);
-    float getCost(Node &successor);
-    bool isSameState(Node &rhs);
-    size_t Hash();
-
-    void printNodeInfo();
-};
-
-int getValue(int x, int y) {
-    return default_maze[y * maze_width + x] if (x >= 0 && x < maze_width && y >= 0 && y < maze_height);
+// Function to check if a given cell is valid (inside the maze and not blocked)
+bool isValid(int x, int y, int m, int n, const std::vector<std::vector<bool>>& maze) {
+    return x >= 0 && y >= 0 && x < m && y < n && !maze[x][y];
 }
 
-bool Node::isSameState(Node &rhs)
-{
-    return x == rhs.x && y == rhs.y;
+// Function to calculate the heuristic (Manhattan distance)
+int heuristic(int x, int y, const std::pair<int, int>& end) {
+    return std::abs(x - end.first) + std::abs(y - end.second);
 }
 
-size_t Node::Hash()
-{
-    size_t h1 = std::hash<float>{}(x);
-    size_t h2 = std::hash<float>{}(y);
-    return h1 ^ (h2 << 1);
-}
+std::vector<std::pair<int, int>> AStar(std::vector<std::vector<bool>>& maze, int m, int n,
+                                       std::pair<int, int> start, std::pair<int, int> end) {
+    std::vector<std::pair<int, int>> path;
 
-float Node::goalDistanceEstimation(Node &nodeGoal)
-{
-    return abs(x - nodeGoal.x) + abs(y - nodeGoal.y);
-}
+    // Directions: up, down, left, right
+    int dx[] = { -1, 1, 0, 0 };
+    int dy[] = { 0, 0, -1, 1 };
 
-bool Node::isGoal(Node &nodeGoal)
-{
-    return isSameState(nodeGoal);
-}
+    // Priority queue to store nodes based on their total cost
+    std::priority_queue<Node, std::vector<Node>, std::greater<Node>> pq;
 
-bool Node::getSuccessors(std::vector<Node> &Neighbors, Node &parentNode)
-{
-    int parent_x = -1;
-    int parent_y = -1;
+    // Initialize the start node
+    Node startNode = {start.first, start.second, 0, heuristic(start.first, start.second, end), 0};
+    pq.push(startNode);
 
-    if (!(parentNode.isSameState(*this))) {
-        parent_x = parentNode.x;
-        parent_y = parentNode.y;
-    }
+    // Matrix to store the cost to reach each cell
+    std::vector<std::vector<int>> cost(m, std::vector<int>(n, INT_MAX));
+    cost[start.first][start.second] = 0;
 
-    Node newNode;
-    if (getValue(x - 1, y) == 1 && !(isSameState(parentNode)))
-    {
-        newNode = Node(x - 1, y);
-        Neighbors.push_back(newNode);
-    }
-    if (getValue(x + 1, y) == 1 && !(isSameState(parentNode)))
-    {
-        newNode = Node(x + 1, y);
-        Neighbors.push_back(newNode);
-    }
-    if (getValue(x, y - 1) == 1 && !(isSameState(parentNode)))
-    {
-        newNode = Node(x, y - 1);
-        Neighbors.push_back(newNode);
-    }
-    if (getValue(x, y + 1) == 1 && !(isSameState(parentNode)))
-    {
-        newNode = Node(x, y + 1);
-        Neighbors.push_back(newNode);
-    }
-    return true;
-}
+    // Matrix to store the parent of each cell
+    std::vector<std::vector<std::pair<int, int>>> parent(m, std::vector<std::pair<int, int>>(n, {-1, -1}));
 
-float Node::getCost(Node &successor)
-{
-    return (float) getValue(x, y);
-}
+    while (!pq.empty()) {
+        Node current = pq.top();
+        pq.pop();
 
-void Node::printNodeInfo()
-{
-    const int strSize = 1000;
-    char str[strSize];
-    snprintf(str, strSize, "Node position: (%d, %d)\n", x, y);
-    std::cout << str;
-}
-int main()
-{
-    std::vector<Node> path;
-    Node startNode = Node(0,0);
-    Node endNode = Node(3,3);
-    Node currentNode = startNode;
-    while (!currentNode.isSameState(endNode))
-    {
-        std::vector<Node> neighbors;
-        currentNode.getSuccessors(neighbors, currentNode);
-        Node nextNode = neighbors[0];
-        for (int i = 0; i < neighbors.size(); i++)
-        {
-            if (nextNode.getCost(neighbors[i]) < nextNode.getCost(currentNode))
-            {
-                nextNode = neighbors[i];
+        // Check if the current node is the goal
+        if (current.x == end.first && current.y == end.second) {
+            // Reconstruct the path from the goal to the start
+            while (current.x != -1 && current.y != -1) {
+                path.push_back({current.x, current.y});
+                current = {parent[current.x][current.y].first, parent[current.x][current.y].second, 0, 0, 0};
+            }
+            std::reverse(path.begin(), path.end());
+            return path;
+        }
+
+        // Explore neighbors
+        for (int i = 0; i < 4; ++i) {
+            int newX = current.x + dx[i];
+            int newY = current.y + dy[i];
+
+            // Check if the neighbor is valid
+            if (isValid(newX, newY, m, n, maze)) {
+                int newG = current.g + 1;
+
+                // Check if the new path to the neighbor is shorter
+                if (newG < cost[newX][newY]) {
+                    cost[newX][newY] = newG;
+                    int newH = heuristic(newX, newY, end);
+                    int newF = newG + newH;
+                    pq.push({newX, newY, newG, newH, newF});
+                    parent[newX][newY] = {current.x, current.y};
+                }
             }
         }
-        path.push_back(nextNode);
-        nextNode.printNodeInfo();
-        currentNode = nextNode;
-        std::cout << "Steps: " << path.size() << std::endl;
-        return 0;
     }
+
+    // If the goal is not reachable, return an empty path
+    return path;
+}
+
+int main() {
+    // Example usage
+    int m = 5; // Replace with your maze dimensions
+    int n = 5;
+    // (0, 0) (0, 1) (0, 2) (1, 2) (2, 2) (2, 3) (2, 4) (3, 4) (4, 4) (4, 3)
+    std::vector<std::vector<bool>> maze = {
+        {false, false, false, false, false},
+        {true,  true,  false, true,  false},
+        {false, false, false, false, false},
+        {false, true,  true,  true,  false},
+        {false, false, false, false, false}
+    };
+
+    std::pair<int, int> start = {0, 0};
+    std::pair<int, int> end = {4, 3};
+
+    std::vector<std::pair<int, int>> path = AStar(maze, m, n, start, end);
+
+    // Print the path
+    std::cout << "Path:\n";
+    for (const auto& point : path) {
+        std::cout << "(" << point.first << ", " << point.second << ") ";
+    }
+    std::cout << "\n";
+    return 0;
 }

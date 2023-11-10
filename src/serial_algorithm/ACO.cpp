@@ -159,15 +159,15 @@ int main()
         {false, false, false, false, false, false},
         {false, false, false, false, false, false},
         {false, false, false, false, false, false},
+        {false, true, false, false, false, false},
         {false, false, false, false, false, false},
+        {false, false, true, false, false, false},
+        {true, false, false, false, false, true},
+        {false, false, true, false, false, false},
         {false, false, false, false, false, false},
-        {false, false, false, false, false, false},
-        {false, false, false, false, false, false},
-        {false, false, false, false, false, false},
-        {false, false, false, false, false, false},
-        {false, false, false, false, false, false},
+        {false, false, false, false, true, false},
     };
-    std::vector<std::pair<int, int>> solution = ACO(maze, std::make_pair(0, 0), std::make_pair(0, 5));
+    std::vector<std::pair<int, int>> solution = ACO(maze, std::make_pair(0, 0), std::make_pair(8, 4));
     for (auto &pos : solution)
     {
         std::cout << pos.first << " " << pos.second << std::endl;

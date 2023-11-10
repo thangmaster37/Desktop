@@ -89,7 +89,7 @@ std::vector<std::pair<int, int>> AStar(std::vector<std::vector<bool>>& maze, int
 
 int main() {
     // Example usage
-    int m = 5; // Replace with your maze dimensions
+    int m = 5; 
     int n = 5;
     // (0, 0) (0, 1) (0, 2) (1, 2) (2, 2) (2, 3) (2, 4) (3, 4) (4, 4) (4, 3)
     std::vector<std::vector<bool>> maze = {

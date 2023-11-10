@@ -89,19 +89,32 @@ std::vector<std::pair<int, int>> AStar(std::vector<std::vector<bool>>& maze, int
 
 int main() {
     // Example usage
-    int m = 5; 
-    int n = 5;
+    int m = 10; 
+    int n = 6;
     // (0, 0) (0, 1) (0, 2) (1, 2) (2, 2) (2, 3) (2, 4) (3, 4) (4, 4) (4, 3)
+    // std::vector<std::vector<bool>> maze = {
+    //     {false, false, false, false, false},
+    //     {true,  true,  false, true,  false},
+    //     {false, false, false, false, false},
+    //     {false, true,  true,  true,  false},
+    //     {false, false, false, false, false}
+    // };
+    // (0, 0) (1, 0) (2, 0) (3, 0) (4, 0) (4, 1) (5, 1) (6, 1) (6, 2) (6, 3) (7, 3) (8, 3) (8, 4) 
     std::vector<std::vector<bool>> maze = {
-        {false, false, false, false, false},
-        {true,  true,  false, true,  false},
-        {false, false, false, false, false},
-        {false, true,  true,  true,  false},
-        {false, false, false, false, false}
+        {false, false, false, false, false, false},
+        {false, false, false, false, false, false},
+        {false, false, false, false, false, false},
+        {false, true, false, false, false, false},
+        {false, false, false, false, false, false},
+        {false, false, true, false, false, false},
+        {true, false, false, false, false, true},
+        {false, false, true, false, false, false},
+        {false, false, false, false, false, false},
+        {false, false, false, false, true, false},
     };
 
     std::pair<int, int> start = {0, 0};
-    std::pair<int, int> end = {4, 3};
+    std::pair<int, int> end = {8, 4};
 
     std::vector<std::pair<int, int>> path = AStar(maze, m, n, start, end);
 
@@ -110,6 +123,6 @@ int main() {
     for (const auto& point : path) {
         std::cout << "(" << point.first << ", " << point.second << ") ";
     }
-    std::cout << "\n";
+    std::cout << std::endl << "Step: " << path.size() << std::endl;
     return 0;
 }

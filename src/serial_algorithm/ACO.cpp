@@ -155,23 +155,33 @@ std::vector<std::pair<int, int>> ACO(std::vector<std::vector<bool>> &maze,
 
 int main()
 {
+    // std::vector<std::vector<bool>> maze = {
+    //     {false, false, false, false, false, false},
+    //     {false, false, false, false, false, false},
+    //     {false, false, false, false, false, false},
+    //     {false, true, false, false, false, false},
+    //     {false, false, false, false, false, false},
+    //     {false, false, true, false, false, false},
+    //     {true, false, false, false, false, true},
+    //     {false, false, true, false, false, false},
+    //     {false, false, false, false, false, false},
+    //     {false, false, false, false, true, false},
+    // };
     std::vector<std::vector<bool>> maze = {
-        {false, false, false, false, false, false},
-        {false, false, false, false, false, false},
-        {false, false, false, false, false, false},
-        {false, true, false, false, false, false},
-        {false, false, false, false, false, false},
-        {false, false, true, false, false, false},
-        {true, false, false, false, false, true},
-        {false, false, true, false, false, false},
-        {false, false, false, false, false, false},
-        {false, false, false, false, true, false},
+        {false, false, false, false, false},
+        {true,  true,  false, true,  false},
+        {false, false, false, false, false},
+        {false, true,  true,  true,  false},
+        {false, false, false, false, false}
     };
-    std::vector<std::pair<int, int>> solution = ACO(maze, std::make_pair(0, 0), std::make_pair(8, 4));
+    std::vector<std::pair<int, int>> solution = ACO(maze, std::make_pair(0, 0), std::make_pair(4, 3));
+    
+    // Print the path
+    std::cout << "Path:\n";
     for (auto &pos : solution)
     {
-        std::cout << pos.first << " " << pos.second << std::endl;
+        std::cout << "(" << pos.first << ", " << pos.second << ") ";
     }
-    std::cout << "Step: " << solution.size() << std::endl;
+    std::cout << std::endl << "Step: " << solution.size() << std::endl;
     return 0;
 }

@@ -51,6 +51,8 @@ std::vector<std::pair<int, int>> getNeighbors(std::pair<int, int> current, std::
 }
 
 std::vector<std::pair<int, int>> ACO(std::vector<std::vector<bool>> &maze,
+                                     int m,
+                                     int n,
                                      std::pair<int, int> start,
                                      std::pair<int, int> end, int numAnts = 30,
                                      double iterations = 30,
@@ -58,8 +60,8 @@ std::vector<std::pair<int, int>> ACO(std::vector<std::vector<bool>> &maze,
                                      double evaporationRate = 0.3,
                                      double alpha = 0.6)
 {
-    int m = maze.size();
-    int n = maze.at(0).size();
+    // int m = maze.size();
+    // int n = maze.at(0).size();
     std::random_device rd;
     std::mt19937 gen(rd());
     // std::uniform_int_distribution<> randomDir(0, 3);

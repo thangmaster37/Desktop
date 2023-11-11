@@ -140,14 +140,14 @@ std::vector<std::pair<int, int>> ACO(std::vector<std::vector<bool>> &maze,
                 double delta = pheromoneConst / path.size();
                 pheromoneDelta[trail] += delta;
             }
-            for (auto &trail : pheromoneMap)
-            {
-                pheromoneMap[trail.first] *= (1 - evaporationRate);
-            }
-            for (auto &trail : pheromoneDelta)
-            {
-                pheromoneMap[trail.first] += trail.second;
-            }
+        }
+        for (auto &trail : pheromoneMap)
+        {
+            pheromoneMap[trail.first] *= (1 - evaporationRate);
+        }
+        for (auto &trail : pheromoneDelta)
+        {
+            pheromoneMap[trail.first] += trail.second;
         }
     }
     return bestPath;
@@ -169,19 +169,19 @@ int main()
     // };
     std::vector<std::vector<bool>> maze = {
         {false, false, false, false, false},
-        {true,  true,  false, true,  false},
+        {true, true, false, true, false},
         {false, false, false, false, false},
-        {false, true,  true,  true,  false},
-        {false, false, false, false, false}
-    };
+        {false, true, true, true, false},
+        {false, false, false, false, false}};
     std::vector<std::pair<int, int>> solution = ACO(maze, std::make_pair(0, 0), std::make_pair(4, 3));
-    
+
     // Print the path
     std::cout << "Path:\n";
     for (auto &pos : solution)
     {
         std::cout << "(" << pos.first << ", " << pos.second << ") ";
     }
-    std::cout << std::endl << "Step: " << solution.size() << std::endl;
+    std::cout << std::endl
+              << "Step: " << solution.size() << std::endl;
     return 0;
 }

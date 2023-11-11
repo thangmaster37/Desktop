@@ -1,8 +1,8 @@
 // Warning from Harito: these include have to have executable file 
 // Such us: AStar, ACO, maze
-#include "../src/serial/AStar"
-#include "../src/serial/ACO"
-#include "../src/maze/maze"
+#include "../src/serial/AStar.cpp"
+#include "../src/serial/ACO.cpp"
+#include "../src/maze/maze.cpp"
 #include <iostream>
 #include <vector>
 #include <cstdlib>
@@ -72,8 +72,8 @@ int main()
     for (int i = 0; i < 4; i++) {
         std::vector<std::vector<bool>> maze = createMaze(row_column[i], row_column[i], 0.3);
         std::pair<std::pair<int, int>, std::pair<int, int>> startAndEnd = selectStartAndEnd(maze);
-        std::pair<int, int> start = startAndEnd.first();
-        std::pair<int, int> end = startAndEnd.second();
+        std::pair<int, int> start = startAndEnd.first;
+        std::pair<int, int> end = startAndEnd.second;
 
         timeAStar = resultAStar(maze, row_column[i], row_column[i], start, end);
         timeACO = resultACO(maze, row_column[i], row_column[i], start, end);
@@ -84,8 +84,8 @@ int main()
 
         data_compare.push_back(arrays);
     }
-    // std::string filename = "../test/compareAlgorithm/data_compare_time.txt";
-    // WriteListToFile(data_compare, filename);
+    std::string filename = "../test/compareAlgorithm/data_compare_time.txt";
+    WriteListToFile(data_compare, filename);
 
     return 0;
 }

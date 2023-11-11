@@ -100,10 +100,10 @@ std::vector<std::pair<int, int>> AStar(std::vector<std::vector<bool>> &maze, int
     return path;
 }
 
-int main()
-{
-    return 0;
-}
+// int main()
+// {
+//     return 0;
+// }
 
 // int main() {
 //     // Example usage

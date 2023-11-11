@@ -174,10 +174,10 @@ std::vector<std::pair<int, int>> ACO(std::vector<std::vector<bool>> &maze, int m
     return bestPath;
 }
 
-int main() 
-{
-    return 0;
-}
+// int main() 
+// {
+//     return 0;
+// }
 
 // int main()
 // {

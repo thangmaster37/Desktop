@@ -1,6 +1,6 @@
-#include "../src/serial/AStar"
-#include "../src/serial/ACO"
-#include "../src/maze/maze"
+#include "../src/serial/AStar.cpp"
+#include "../src/serial/ACO.cpp"
+#include "../src/maze/maze.cpp"
 
 void printResult(std::vector<std::pair<int, int>> result) {
     for (const auto& point : result)

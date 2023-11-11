@@ -1,6 +1,6 @@
-#include "../serial_algorithm/AStar.cpp"
-#include "../serial_algorithm/ACO.cpp"
-#include "../data_structure/data_structure_with_matrix.cpp"
+#include "../src/serial/AStar.cpp"
+#include "../src/serial/ACO.cpp"
+#include "../src/maze/maze.cpp"
 
 #include <iostream>
 #include <vector>
@@ -10,7 +10,6 @@
 
 #include <Windows.h>
 #include <Psapi.h>
-
 #include <list>
 #include <fstream> 
 
@@ -42,26 +41,26 @@ void resultACO(std::vector<std::vector<bool>> &maze, int m, int n, std::pair<int
 
 }
 
-// void WriteListToFile(const std::vector<std::vector<double>>& data_compare, const std::string& filename) {
-//     std::ofstream file(filename);
+void WriteListToFile(const std::vector<std::vector<double>>& data_compare, const std::string& filename) {
+    std::ofstream file(filename);
     
-//     if (file.is_open()) {
-//         for (const auto& row : data_compare) {
-//             for (const auto& element : row) {
-//                 file << element << " ";
-//             }
-//             file << std::endl;
-//         }
+    if (file.is_open()) {
+        for (const auto& row : data_compare) {
+            for (const auto& element : row) {
+                file << element << " ";
+            }
+            file << std::endl;
+        }
         
-//         file.close();
-//         std::cout << "Data written to file successfully." << std::endl;
-//     } else {
-//         std::cout << "Unable to open file." << std::endl;
-//     }
-// }
+        file.close();
+        std::cout << "Data written to file successfully." << std::endl;
+    } else {
+        std::cout << "Unable to open file." << std::endl;
+    }
+}
 
 int main() {
-    // std::vector<std::vector<double>> data_compare = {};
+    std::vector<std::vector<double>> data_compare = {};
     double ramAstar, ramACO;
     int row_column[] = {100,500,1000,5000};
     for (int i = 0; i < 4; i++) {
@@ -74,16 +73,16 @@ int main() {
         resultACO(maze, row_column[i], row_column[i], start, end);
         std::cout << std::endl;
 
-        // std::vector<double> arrays;
+        std::vector<double> arrays;
 
-        // arrays.push_back(ramAstar);
-        // arrays.push_back(ramACO);
+        arrays.push_back(ramAstar);
+        arrays.push_back(ramACO);
 
-        // data_compare.push_back(arrays);
+        data_compare.push_back(arrays);
 
     }
     std::string filename = "../test_main/compareAlgorithm/data_compare_ram.txt";
-    // WriteListToFile(data_compare, filename);
+    WriteListToFile(data_compare, filename);
    
     return 0;
 }

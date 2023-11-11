@@ -64,7 +64,7 @@ std::vector<std::pair<int, int>> ACO(std::vector<std::vector<bool>> &maze,
     for (int i = 0; i < iterations; ++i)
     {
         std::unordered_map<std::pair<std::pair<int, int>, std::pair<int, int>>, double, HashPair> pheromoneDelta;
-#pragma omp parallel for private(pheromoneMap)
+#pragma omp parallel for
         for (int ant = 0; ant < numAnts; ++ant)
         {
             std::pair<int, int> current = start;
@@ -78,12 +78,25 @@ std::vector<std::pair<int, int>> ACO(std::vector<std::vector<bool>> &maze,
                 double sumPheromone = 0.0;
                 for (auto &neighbor : neighbors)
                 {
-                    pheromoneMap.try_emplace(std::make_pair(current, neighbor), 0.1);
-                    sumPheromone += pheromoneMap[std::make_pair(current, neighbor)];
+                    if (pheromoneMap.find(std::make_pair(current, neighbor)) != pheromoneMap.end())
+                    {
+                        sumPheromone += pheromoneMap[std::make_pair(current, neighbor)];
+                    }
+                    else
+                    {
+                        sumPheromone += 0.1;
+                    }
                 }
                 for (auto &neighbor : neighbors)
                 {
-                    weights.push_back(std::pow(pheromoneMap[std::make_pair(current, neighbor)], alpha) / sumPheromone);
+                    if (pheromoneMap.find(std::make_pair(current, neighbor)) != pheromoneMap.end())
+                    {
+                        weights.push_back(std::pow(pheromoneMap[std::make_pair(current, neighbor)], alpha) / sumPheromone);
+                    }
+                    else
+                    {
+                        weights.push_back(std::pow(0.1, alpha) / sumPheromone);
+                    }
                 }
                 std::discrete_distribution<> dist(weights.begin(), weights.end());
                 std::pair<int, int> pre = current;

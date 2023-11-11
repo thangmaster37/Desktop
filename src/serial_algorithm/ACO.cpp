@@ -9,6 +9,7 @@
 #include <random>
 #include <limits.h>
 #include <cmath>
+#include <chrono>
 // #include "../data_structure/data_structure_with_matrix.cpp"
 
 struct HashPair
@@ -173,7 +174,11 @@ int main()
         {false, false, false, false, false},
         {false, true, true, true, false},
         {false, false, false, false, false}};
+    auto start = std::chrono::high_resolution_clock::now();
     std::vector<std::pair<int, int>> solution = ACO(maze, std::make_pair(0, 0), std::make_pair(4, 3));
+    auto end = std::chrono::high_resolution_clock::now();
+    std::chrono::duration<double> duration = end - start;
+    std::cout << "Thời gian thực hiện song song: " << duration.count() << " giây\n";
 
     // Print the path
     std::cout << "Path:\n";

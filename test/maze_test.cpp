@@ -1,6 +1,6 @@
-#include "../serial_algorithm/AStar.cpp"
-#include "../serial_algorithm/ACO.cpp"
-#include "../data_structure/data_structure_with_matrix.cpp"
+#include "../src/serial/AStar"
+#include "../src/serial/ACO"
+#include "../src/maze/maze"
 
 void printResult(std::vector<std::pair<int, int>> result) {
     for (const auto& point : result)
@@ -16,7 +16,6 @@ int main()
     double obstacleProbability = 0.3; // Xác suất ô không thể đi qua
 
     std::vector<std::vector<bool>> maze = createMaze(m, n, obstacleProbability);
-
 
     std::pair<std::pair<int, int>, std::pair<int, int>> startAndEnd = selectStartAndEnd(maze);
     std::pair<int, int> start = startAndEnd.first;
@@ -38,11 +37,11 @@ int main()
     std::cout << "Điểm bắt đầu: (" << start.first << ", " << start.second << ")" << std::endl;
     std::cout << "Điểm kết thúc: (" << end.first << ", " << end.second << ")" << std::endl;
 
-    std::vector<std::pair<int, int>> path_Astar = AStar(maze, m, n, start, end);
+    std::vector<std::pair<int, int>> path_AStar = AStar(maze, m, n, start, end);
     std::vector<std::pair<int, int>> path_ACO = ACO(maze, m, n, start, end);
 
     // std::cout << "Result of the Astar algorithm: ";
-    // printResult(path_Astar);
+    // printResult(path_AStar);
 
     
     // std::cout << "Result of the ACO algorithm: ";

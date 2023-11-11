@@ -27,22 +27,27 @@ struct HashPair
 
 const std::vector<std::pair<int, int>> directions = {{-1, 0}, {0, 1}, {1, 0}, {0, -1}};
 
-bool isPath(std::pair<int, int> pos, std::vector<std::vector<bool>> &maze)
+bool isPath(std::pair<int, int> pos, std::vector<std::vector<bool>> &maze, int m, int n)
 {
     return pos.first >= 0 &&
-           pos.first < maze.size() &&
+           pos.first < m &&
            pos.second >= 0 &&
-           pos.second < maze.at(0).size() &&
+           pos.second < n &&
            !maze.at(pos.first).at(pos.second);
+    // return pos.first >= 0 &&
+    //        pos.first < maze.size() &&
+    //        pos.second >= 0 &&
+    //        pos.second < maze.at(0).size() &&
+    //        !maze.at(pos.first).at(pos.second);
 }
 
-std::vector<std::pair<int, int>> getNeighbors(std::pair<int, int> current, std::vector<std::vector<bool>> &maze)
+std::vector<std::pair<int, int>> getNeighbors(std::pair<int, int> current, std::vector<std::vector<bool>> &maze, int m, int n)
 {
     std::vector<std::pair<int, int>> neighbors;
     for (auto &move : directions)
     {
         std::pair<int, int> newPos = {current.first + move.first, current.second + move.second};
-        if (isPath(newPos, maze))
+        if (isPath(newPos, maze, m, n))
         {
             neighbors.push_back(newPos);
         }
@@ -50,7 +55,7 @@ std::vector<std::pair<int, int>> getNeighbors(std::pair<int, int> current, std::
     return neighbors;
 }
 
-std::vector<std::pair<int, int>> ACO(std::vector<std::vector<bool>> &maze,
+std::vector<std::pair<int, int>> ACO(std::vector<std::vector<bool>> &maze, int m, int n,
                                      std::pair<int, int> start,
                                      std::pair<int, int> end, int numAnts = 30,
                                      double iterations = 30,
@@ -77,7 +82,7 @@ std::vector<std::pair<int, int>> ACO(std::vector<std::vector<bool>> &maze,
             std::unordered_set<std::pair<std::pair<int, int>, std::pair<int, int>>, HashPair> usedTrails;
             while (current.first != end.first || current.second != end.second)
             {
-                std::vector<std::pair<int, int>> neighbors = getNeighbors(current, maze);
+                std::vector<std::pair<int, int>> neighbors = getNeighbors(current, maze, m, n);
                 std::vector<double> weights;
                 double sumPheromone = 0.0;
                 for (auto &neighbor : neighbors)
@@ -169,39 +174,45 @@ std::vector<std::pair<int, int>> ACO(std::vector<std::vector<bool>> &maze,
     return bestPath;
 }
 
-int main()
+int main() 
 {
-    // std::vector<std::vector<bool>> maze = {
-    //     {false, false, false, false, false, false},
-    //     {false, false, false, false, false, false},
-    //     {false, false, false, false, false, false},
-    //     {false, true, false, false, false, false},
-    //     {false, false, false, false, false, false},
-    //     {false, false, true, false, false, false},
-    //     {true, false, false, false, false, true},
-    //     {false, false, true, false, false, false},
-    //     {false, false, false, false, false, false},
-    //     {false, false, false, false, true, false},
-    // };
-    std::vector<std::vector<bool>> maze = {
-        {false, false, false, false, false},
-        {true, true, false, true, false},
-        {false, false, false, false, false},
-        {false, true, true, true, false},
-        {false, false, false, false, false}};
-    auto start = std::chrono::high_resolution_clock::now();
-    std::vector<std::pair<int, int>> solution = ACO(maze, std::make_pair(0, 0), std::make_pair(4, 3));
-    auto end = std::chrono::high_resolution_clock::now();
-    std::chrono::duration<double> duration = end - start;
-    std::cout << "Thời gian thực hiện song song: " << duration.count() << " giây\n";
-
-    // Print the path
-    std::cout << "Path:\n";
-    for (auto &pos : solution)
-    {
-        std::cout << "(" << pos.first << ", " << pos.second << ") ";
-    }
-    std::cout << std::endl
-              << "Step: " << solution.size() << std::endl;
     return 0;
 }
+
+// int main()
+// {
+//     // std::vector<std::vector<bool>> maze = {
+//     //     {false, false, false, false, false, false},
+//     //     {false, false, false, false, false, false},
+//     //     {false, false, false, false, false, false},
+//     //     {false, true, false, false, false, false},
+//     //     {false, false, false, false, false, false},
+//     //     {false, false, true, false, false, false},
+//     //     {true, false, false, false, false, true},
+//     //     {false, false, true, false, false, false},
+//     //     {false, false, false, false, false, false},
+//     //     {false, false, false, false, true, false},
+//     // };
+//     int m = 5;
+//     int n = 5;
+//     std::vector<std::vector<bool>> maze = {
+//         {false, false, false, false, false},
+//         {true, true, false, true, false},
+//         {false, false, false, false, false},
+//         {false, true, true, true, false},
+//         {false, false, false, false, false}};
+//     auto start = std::chrono::high_resolution_clock::now();
+//     std::vector<std::pair<int, int>> solution = ACO(maze, m, n, std::make_pair(0, 0), std::make_pair(4, 3));
+//     auto end = std::chrono::high_resolution_clock::now();
+//     std::chrono::duration<double> duration = end - start;
+//     std::cout << "Thời gian thực hiện tuần tự: " << duration.count() << " giây\n";
+//     // Print the path
+//     std::cout << "Path:\n";
+//     for (auto &pos : solution)
+//     {
+//         std::cout << "(" << pos.first << ", " << pos.second << ") ";
+//     }
+//     std::cout << std::endl
+//               << "Step: " << solution.size() << std::endl;
+//     return 0;
+// }

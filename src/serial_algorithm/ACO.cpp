@@ -9,6 +9,7 @@
 #include <random>
 #include <limits.h>
 #include <cmath>
+#include <chrono>
 // #include "../data_structure/data_structure_with_matrix.cpp"
 
 struct HashPair
@@ -82,12 +83,28 @@ std::vector<std::pair<int, int>> ACO(std::vector<std::vector<bool>> &maze,
                 double sumPheromone = 0.0;
                 for (auto &neighbor : neighbors)
                 {
-                    pheromoneMap.try_emplace(std::make_pair(current, neighbor), 0.1);
-                    sumPheromone += pheromoneMap[std::make_pair(current, neighbor)];
+                    // pheromoneMap.try_emplace(std::make_pair(current, neighbor), 0.1);
+                    // sumPheromone += pheromoneMap[std::make_pair(current, neighbor)];
+                    if (pheromoneMap.find(std::make_pair(current, neighbor)) != pheromoneMap.end())
+                    {
+                        sumPheromone += pheromoneMap[std::make_pair(current, neighbor)];
+                    }
+                    else
+                    {
+                        sumPheromone += 0.1;
+                    }
                 }
                 for (auto &neighbor : neighbors)
                 {
-                    weights.push_back(std::pow(pheromoneMap[std::make_pair(current, neighbor)], alpha) / sumPheromone);
+                    // weights.push_back(std::pow(pheromoneMap[std::make_pair(current, neighbor)], alpha) / sumPheromone);
+                    if (pheromoneMap.find(std::make_pair(current, neighbor)) != pheromoneMap.end())
+                    {
+                        weights.push_back(std::pow(pheromoneMap[std::make_pair(current, neighbor)], alpha) / sumPheromone);
+                    }
+                    else
+                    {
+                        weights.push_back(std::pow(0.1, alpha) / sumPheromone);
+                    }
                 }
 
                 // std::vector<int> dirs;
@@ -173,7 +190,11 @@ int main()
         {false, false, false, false, false},
         {false, true, true, true, false},
         {false, false, false, false, false}};
+    auto start = std::chrono::high_resolution_clock::now();
     std::vector<std::pair<int, int>> solution = ACO(maze, std::make_pair(0, 0), std::make_pair(4, 3));
+    auto end = std::chrono::high_resolution_clock::now();
+    std::chrono::duration<double> duration = end - start;
+    std::cout << "Thời gian thực hiện song song: " << duration.count() << " giây\n";
 
     // Print the path
     std::cout << "Path:\n";

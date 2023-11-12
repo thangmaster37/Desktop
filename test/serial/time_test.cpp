@@ -1,8 +1,14 @@
-// Warning from Harito: these include have to have executable file 
-// Such us: AStar, ACO, maze
-#include "../src/serial/AStar.cpp"
-#include "../src/serial/ACO.cpp"
-#include "../src/maze/maze.cpp"
+// Warning from Harito: these include have to have header file 
+// Such us: AStar.h, ACO.h, maze.h
+// #include "../src/serial/AStar.cpp"
+// #include "../src/serial/ACO.cpp"
+// #include "../src/maze/maze.cpp"
+#include "src/serial/AStar.cpp"
+#include "src/serial/ACO.cpp"
+#include "src/maze/maze.cpp"
+// #include "../lib/serial/AStar.h"
+// #include "../lib/serial/ACO.h"
+// #include "../lib/maze/maze.h"
 #include <iostream>
 #include <vector>
 #include <cstdlib>
@@ -15,7 +21,7 @@ double resultAStar(std::vector<std::vector<bool>> &maze, int m, int n, std::pair
     // Đo thời gian bắt đầu
     auto begin_time = std::chrono::high_resolution_clock::now();
 
-    std::vector<std::pair<int, int>> path_AStar = AStar(maze, m, n, start, end);
+    std::vector<std::pair<int, int>> path_AStar = AStar(maze, start, end);
     
     // Đo thời gian kết thúc
     auto end_time = std::chrono::high_resolution_clock::now();
@@ -32,7 +38,7 @@ double resultACO(std::vector<std::vector<bool>> &maze, int m, int n, std::pair<i
     // Đo thời gian bắt đầu
     auto begin_time = std::chrono::high_resolution_clock::now();
 
-    std::vector<std::pair<int, int>> path_ACO = ACO(maze, m, n, start, end);
+    std::vector<std::pair<int, int>> path_ACO = ACO(maze, start, end);
     
     // Đo thời gian kết thúc
     auto end_time = std::chrono::high_resolution_clock::now();
@@ -67,8 +73,8 @@ int main()
 {
     std::vector<std::vector<double>> data_compare = {};
     double timeAStar, timeACO;
-    // int row_column[] = {10, 20, 30, 40};
-    int row_column[] = {3, 5, 7, 9};
+    int row_column[] = {10, 20, 30, 40};
+    // int row_column[] = {3, 5, 7, 9};
     for (int i = 0; i < 4; i++) {
         std::vector<std::vector<bool>> maze = createMaze(row_column[i], row_column[i], 0.3);
         std::pair<std::pair<int, int>, std::pair<int, int>> startAndEnd = selectStartAndEnd(maze);
@@ -84,7 +90,7 @@ int main()
 
         data_compare.push_back(arrays);
     }
-    std::string filename = "../test/compareAlgorithm/data_compare_time.txt";
+    std::string filename = "../test/serial/compare/time.txt";
     WriteListToFile(data_compare, filename);
 
     return 0;

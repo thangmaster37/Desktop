@@ -1,14 +1,7 @@
-// Warning from Harito: these include have to have header file 
-// Such us: AStar.h, ACO.h, maze.h
-#include "src/serial/AStar.cpp"
-#include "src/serial/ACO.cpp"
-#include "src/maze/maze.cpp"
-// #include "src/serial/AStar.cpp"
-// #include "src/serial/ACO.cpp"
-// #include "src/maze/maze.cpp"
-// #include "../lib/serial/AStar.h"
-// #include "../lib/serial/ACO.h"
-// #include "../lib/maze/maze.h"
+#include "../../src/serial/AStar.cpp"
+#include "../../src/serial/ACO.cpp"
+#include "../../src/maze/maze.cpp"
+
 #include <iostream>
 #include <vector>
 #include <cstdlib>

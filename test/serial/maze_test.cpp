@@ -1,6 +1,6 @@
-#include "../src/serial/AStar.cpp"
-#include "../src/serial/ACO.cpp"
-#include "../src/maze/maze.cpp"
+#include "../../src/serial/AStar.cpp"
+#include "../../src/serial/ACO.cpp"
+#include "../../src/maze/maze.cpp"
 
 void printResult(std::vector<std::pair<int, int>> result) {
     for (const auto& point : result)
@@ -37,8 +37,8 @@ int main()
     std::cout << "Điểm bắt đầu: (" << start.first << ", " << start.second << ")" << std::endl;
     std::cout << "Điểm kết thúc: (" << end.first << ", " << end.second << ")" << std::endl;
 
-    std::vector<std::pair<int, int>> path_AStar = AStar(maze, m, n, start, end);
-    std::vector<std::pair<int, int>> path_ACO = ACO(maze, m, n, start, end);
+    std::vector<std::pair<int, int>> path_AStar = AStar(maze, start, end);
+    std::vector<std::pair<int, int>> path_ACO = ACO(maze, start, end);
 
     // std::cout << "Result of the Astar algorithm: ";
     // printResult(path_AStar);

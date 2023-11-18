@@ -1,9 +1,9 @@
 // Warning from Harito: these include have to have cpp file 
 // Such us: AStar, ACO, maze
-#include "../src/parallel/AStar.cpp"
-#include "../src/parallel/AStar.cpp"
-#include "../src/parallel/ACO.cpp"
-#include "../src/maze/maze.cpp"
+#include "../../src/parallel/AStar.cpp"
+#include "../../src/parallel/ACO.cpp"
+#include "../../src/stmaze/maze.cpp"
+
 #include <iostream>
 #include <vector>
 #include <cstdlib>

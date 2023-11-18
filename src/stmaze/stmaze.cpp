@@ -1,4 +1,4 @@
-// Cách biểu diễn 2: Sử dụng matrix giúp tối ưu tốc độ đọc / ghi
+// Cách biểu diễn: Sử dụng vector giúp tối ưu tốc độ đọc / ghi
 #include <iostream>
 #include <vector>
 #include <cstdlib>
@@ -56,8 +56,8 @@ void printMaze(const std::vector<std::vector<bool>> &maze)
 }
 
 // Hàm chọn ngẫu nhiên hai ô có giá trị false làm điểm bắt đầu và điểm kết thúc
-// Chọn điểm bắt đầu và kết thúc sau khi tạo maze mà không phải trước đó 
-// vì để bám sát các vấn đề thực tiễn ứng dụng là map có trước khi ta chọn điểm bắt đầu và kết thúc 
+// Chọn điểm bắt đầu và kết thúc sau khi tạo maze mà không phải trước đó
+// vì để bám sát các vấn đề thực tiễn ứng dụng là map có trước khi ta chọn điểm bắt đầu và kết thúc
 std::pair<std::pair<int, int>, std::pair<int, int>> selectStartAndEnd(const std::vector<std::vector<bool>> &maze)
 {
     int m = maze.size();
@@ -104,10 +104,24 @@ void changeMaze(std::vector<std::vector<bool>> &maze, double probFalseToTrue, do
     }
 }
 
-// Hàm tạo ra 1 mê cung clone với 1 số thay đổi nhỏ so với mê cung cũ
+// Hàm clone 1 mê cung
+std::vector<std::vector<bool>> cloneMaze(const std::vector<std::vector<bool>> &maze)
+{
+    std::vector<std::vector<bool>> cloneMaze(maze.size(), std::vector<bool>(maze[0].size(), false));
+    for (int i = 0; i < maze.size(); i++)
+    {
+        for (int j = 0; j < maze[0].size(); j++)
+        {
+            cloneMaze[i][j] = maze[i][j];
+        }
+    }
+    return cloneMaze;
+}
+
+// Hàm tạo ra 1 số thay đổi nhỏ so với mê cung cũ
 std::vector<std::vector<bool>> changeCloneMaze(const std::vector<std::vector<bool>> &maze, double probFalseToTrue, double probTrueToFalse)
 {
-    std::vector<std::vector<bool>> newMaze = maze;
+    std::vector<std::vector<bool>> newMaze = cloneMaze(maze);
 
     for (int i = 0; i < newMaze.size(); i++)
     {

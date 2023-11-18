@@ -135,26 +135,26 @@ std::vector<std::pair<int, int>> ACO(std::vector<std::vector<bool>> &maze,
     return bestPath;
 }
 
-int main()
-{
-    std::vector<std::vector<bool>> maze = {
-        {false, false, false, false, false},
-        {true, true, false, true, false},
-        {false, false, false, false, false},
-        {false, true, true, true, false},
-        {false, false, false, false, false}};
-    auto start = std::chrono::high_resolution_clock::now();
-    std::vector<std::pair<int, int>> solution = ACO(maze, std::make_pair(0, 0), std::make_pair(4, 3));
-    auto end = std::chrono::high_resolution_clock::now();
-    std::chrono::duration<double> duration = end - start;
-    std::cout << "Thời gian thực hiện song song: " << duration.count() << " giây\n";
-    // Print the path
-    std::cout << "Path:\n";
-    for (auto &pos : solution)
-    {
-        std::cout << "(" << pos.first << ", " << pos.second << ") ";
-    }
-    std::cout << std::endl
-              << "Step: " << solution.size() << std::endl;
-    return 0;
-}
+// int main()
+// {
+//     std::vector<std::vector<bool>> maze = {
+//         {false, false, false, false, false},
+//         {true, true, false, true, false},
+//         {false, false, false, false, false},
+//         {false, true, true, true, false},
+//         {false, false, false, false, false}};
+//     auto start = std::chrono::high_resolution_clock::now();
+//     std::vector<std::pair<int, int>> solution = ACO(maze, std::make_pair(0, 0), std::make_pair(4, 3));
+//     auto end = std::chrono::high_resolution_clock::now();
+//     std::chrono::duration<double> duration = end - start;
+//     std::cout << "Thời gian thực hiện song song: " << duration.count() << " giây\n";
+//     // Print the path
+//     std::cout << "Path:\n";
+//     for (auto &pos : solution)
+//     {
+//         std::cout << "(" << pos.first << ", " << pos.second << ") ";
+//     }
+//     std::cout << std::endl
+//               << "Step: " << solution.size() << std::endl;
+//     return 0;
+// }

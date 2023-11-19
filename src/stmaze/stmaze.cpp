@@ -85,8 +85,9 @@ std::pair<std::pair<int, int>, std::pair<int, int>> selectStartAndEnd(const std:
 }
 
 // Hàm thay đổi mê cung trực tiếp trên mê cung cũ
-void changeMaze(std::vector<std::vector<bool>> &maze, double probFalseToTrue, double probTrueToFalse)
+bool changeMaze(std::vector<std::vector<bool>> &maze, double probFalseToTrue, double probTrueToFalse)
 {
+    bool is_live_maze = true;
     for (int i = 0; i < maze.size(); i++)
     {
         for (int j = 0; j < maze[0].size(); j++)
@@ -95,13 +96,16 @@ void changeMaze(std::vector<std::vector<bool>> &maze, double probFalseToTrue, do
             if (!maze[i][j] && randomValue < probFalseToTrue)
             {
                 maze[i][j] = true; // Chuyển từ false sang true
+                is_live_maze ^= true;
             }
             else if (maze[i][j] && randomValue < probTrueToFalse)
             {
                 maze[i][j] = false; // Chuyển từ true sang false
+                is_live_maze ^= false;
             }
         }
     }
+    return is_live_maze;
 }
 
 // Hàm clone 1 mê cung

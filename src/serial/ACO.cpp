@@ -29,11 +29,6 @@ const std::vector<std::pair<int, int>> directions = {{-1, 0}, {0, 1}, {1, 0}, {0
 
 bool isPath(std::pair<int, int> pos, std::vector<std::vector<bool>> &maze)
 {
-    // return pos.first >= 0 &&
-    //        pos.first < m &&
-    //        pos.second >= 0 &&
-    //        pos.second < n &&
-    //        !maze.at(pos.first).at(pos.second);
     return pos.first >= 0 &&
            pos.first < maze.size() &&
            pos.second >= 0 &&
@@ -172,10 +167,86 @@ std::vector<std::pair<int, int>> ACO(std::vector<std::vector<bool>> &maze,
     return bestPath;
 }
 
-// int main() 
-// {
-//     return 0;
-// }
+// Return pheromone map of ACO algorithm to use for dynamic maze
+std::unordered_map<std::pair<std::pair<int, int>, std::pair<int, int>>, double, HashPair> pheromoneMap(std::vector<std::vector<bool>> &maze,
+                                     std::pair<int, int> start,
+                                     std::pair<int, int> end, 
+                                     int numAnts = 30,
+                                     double iterations = 50,
+                                     double pheromoneConst = 1000.0,
+                                     double evaporationRate = 0.3,
+                                     double alpha = 0.6)
+{
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::unordered_map<std::pair<std::pair<int, int>, std::pair<int, int>>, double, HashPair> pheromoneMap;
+    std::vector<std::pair<int, int>> bestPath;
+    int bestPathLength = INT_MAX;
+    for (int i = 0; i < iterations; ++i)
+    {
+        std::unordered_map<std::pair<std::pair<int, int>, std::pair<int, int>>, double, HashPair> pheromoneDelta;
+        for (int ant = 0; ant < numAnts; ++ant)
+        {
+            std::pair<int, int> current = start;
+            int dir = 1;
+            std::vector<std::pair<int, int>> path = {current};
+            std::unordered_set<std::pair<std::pair<int, int>, std::pair<int, int>>, HashPair> usedTrails;
+            while (current.first != end.first || current.second != end.second)
+            {
+                std::vector<std::pair<int, int>> neighbors = getNeighbors(current, maze);
+                std::vector<double> weights;
+                double sumPheromone = 0.0;
+                for (auto &neighbor : neighbors)
+                {
+                    if (pheromoneMap.find(std::make_pair(current, neighbor)) != pheromoneMap.end())
+                    {
+                        sumPheromone += pheromoneMap[std::make_pair(current, neighbor)];
+                    }
+                    else
+                    {
+                        sumPheromone += 0.1;
+                    }
+                }
+                for (auto &neighbor : neighbors)
+                {
+                    if (pheromoneMap.find(std::make_pair(current, neighbor)) != pheromoneMap.end())
+                    {
+                        weights.push_back(std::pow(pheromoneMap[std::make_pair(current, neighbor)], alpha) / sumPheromone);
+                    }
+                    else
+                    {
+                        weights.push_back(std::pow(0.1, alpha) / sumPheromone);
+                    }
+                }
+                std::discrete_distribution<> dist(weights.begin(), weights.end());
+                std::pair<int, int> pre = current;
+                int choice = dist(gen);
+                current = neighbors.at(choice);
+                path.push_back(current);
+                usedTrails.insert(std::make_pair(pre, current));
+            }
+            if (path.size() < bestPathLength)
+            {
+                bestPath = path;
+                bestPathLength = path.size();
+            }
+            for (auto &trail : usedTrails)
+            {
+                double delta = pheromoneConst / path.size();
+                pheromoneDelta[trail] += delta;
+            }
+        }
+        for (auto &trail : pheromoneMap)
+        {
+            pheromoneMap[trail.first] *= (1 - evaporationRate);
+        }
+        for (auto &trail : pheromoneDelta)
+        {
+            pheromoneMap[trail.first] += trail.second;
+        }
+    }
+    return pheromoneMap;
+}
 
 // int main()
 // {

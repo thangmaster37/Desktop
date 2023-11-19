@@ -1,0 +1,83 @@
+Tôi có 1 maze liên tục thay đổi tạm gọi là dymaze.
+dymaze có kiểu data là: std::vector<std::vector<bool>>
+với ý nghĩa là tại ô true thì có vật cản nên không đi qua được, 
+tại ô false thì không có vật cản nên đi qua được. 
+Ngoài ra tôi có điểm bắt đầu và điểm kết thúc từ std::pair<std::pair<int, int>, std::pair<int, int>> start_end.
+Tức là start_end.first là điểm bắt đầu và start_end.second là điểm kết thúc.
+
+Bây giờ tôi lấy ra 1 trạng thái của dymaze và nó thành stmaze.
+Vì vậy stmaze cũng sẽ có kiểu dữ liệu là: std::vector<std::vector<bool>>
+
+Tôi sử dụng giải thuật A* và tìm ra con đường đi tối ưu từ điểm bắt đầu tới điểm kết thúc:
+và thu được std::vector<std::pair<int, int>> optimize_path_astar.
+
+Cũng đồng thời trên stmaze này tôi thực hiện thuật toán ACO để thu được 1 map các giá trị pheromone.
+Nó là std::unordered_map<std::pair<std::pair<int, int>, std::pair<int, int>>, double, HashPair> pheromone_map.
+pheromone_map này được định nghĩa HashPair như sau: 
+struct HashPair
+{
+    template <class T1, class T2, class T3, class T4>
+    std::size_t operator()(const std::pair<std::pair<T1, T2>, std::pair<T3, T4>> &p) const
+    {
+        auto h1 = std::hash<T1>{}(p.first.first);
+        auto h2 = std::hash<T2>{}(p.first.second);
+        auto h3 = std::hash<T3>{}(p.second.first);
+        auto h4 = std::hash<T4>{}(p.second.second);
+
+        return h1 ^ (h2 << 1) ^ (h3 << 2) ^ (h4 << 3);
+    }
+};
+Ý nghĩa của HashPair này đó là std::pair<std::pair<int, int> điểm A, std::pair<std::pair<int, int> điểm B, double C.
+Theo đó con đường từ A đến hàng xóm lân cận B có giá trị pheromone là C.
+
+Như vậy với các thao tác trên stmaze tôi đã thu được 1 con đường tối ưu từ giải thuật A* và 1 hash map về giá trị pheromone giữa 2 điểm lân cận nhau có thể đi được nhờ ACO.
+
+Tuy nhiên mục đích của tôi là làm việc trên dymaze. Vậy nên bây giờ tôi thực hiện update maze.
+Theo đó changeMaze(dymaze, 0.05, 0) là cách tôi sẽ làm. 
+Cụ thể về hoạt động của hàm changeMaze này là như sau:
+// Hàm thay đổi mê cung trực tiếp trên mê cung cũ
+bool changeMaze(std::vector<std::vector<bool>> &maze, double probFalseToTrue, double probTrueToFalse)
+{
+    // bool is_live_maze = true;
+    for (int i = 0; i < maze.size(); i++)
+    {
+        for (int j = 0; j < maze[0].size(); j++)
+        {
+            double randomValue = static_cast<double>(std::rand()) / RAND_MAX;
+            if (!maze[i][j] && i != start_end.second.first && j != start_end.second.second && randomValue < probFalseToTrue)
+            {
+                // Điểm đích sẽ không bị chuyển thành true
+                maze[i][j] = true; // Chuyển từ false sang true
+                //is_live_maze ^= true;
+            }
+            else if (maze[i][j] && randomValue < probTrueToFalse)
+            {
+                maze[i][j] = false; // Chuyển từ true sang false
+                //is_live_maze ^= false;
+            }
+        }
+    }
+    return true; //is_live_maze;
+}
+Như vậy tôi đã thực hiện việc update maze và thu được dymaze.
+
+Sau đây là điều quan trọng của bài toán. 
+Tại điểm xuất phát (start_end.first) sẽ có n (ví dụ n = 10) đối tượng object bắt đầu di chuyển đến điểm kết thúc (start_end.second).
+Các đối tượng sẽ lựa chọn ô tiếp theo để đi theo xác suất.
+Cụ thể tiêu chí xác suất là nếu từ ô hiện tại đến ô hàng xóm kế tiếp mà có giá trị pheronmone cao hoặc thuộc đường đi của giải thuật A* cũ
+thì điều chỉnh tăng xác suất lên 1.5 lần rồi nhân với 1 giá trị random < 1 nào đó
+Còn lại thì xác suất sẽ bằng pheronmone của đường đi hiện tại tới ô hàng xóm tiếp theo nhân với 1 giá trị random < 1 nào đó.
+Theo đó chọn max probity đối với đối tượng object và cho object đi theo đường đó.
+Chú ý mỗi object độc lập với nhau nên max probity có thể khác và các object có thể đi theo các con đường khác nhau.
+Sau khi chọn đi đến 1 điểm nào thì object đó sẽ thêm điểm được chọn vào vector con đường nó đi (vector này sẽ tăng dần kích thước chứ không bị giảm dần kích thước - mục đích để xác định con đường nó đi)
+Nếu object phải quay đầu tức đi qua từ điểm hiện tại tới điểm hàng xóm mà trước đó đã từng đi qua thì giá trị pheromone giảm dần.
+Mục dích vì việc phải đi quay đầu thì con đường trước đó vô giá trị nên các object tiếp theo đến điểm này sẽ không lựa chọn đi nữa.
+
+Mỗi khi một object đến điểm đích thì +1 vào số lượng đến đích.
+Nếu object đến điểm mà sau đó cả 4 hướng đều bị chặn thì đánh dấu kết thúc bằng cách thêm <-1;-1> cuối đường đi của nó - ý nghĩa nó đã không thể đến đích thành công.
+
+Như vậy sau mỗi khi một object lựa chọn 1 hàng xóm để đi đến (tất cả số object chưa chết - bị thêm <-1; -1> vào cuối hành trình của nó - chọn được 1 hàng xóm để đi)
+thì thực hiện update maze như cách tôi đã nêu ở trên. 
+
+Điều kiện dừng ở đây là số object bị chết (có <-1; -1> ở cuối hành trình) + số object đến đích = số object xuất phát.
+Hãy viết giải thuật C++ làm những điều tôi vừa nói.

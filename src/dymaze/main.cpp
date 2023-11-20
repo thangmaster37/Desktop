@@ -7,13 +7,15 @@
 #include <cstdlib>
 #include <ctime>
 #include <unordered_map>
+#include <map>
 
 // AStar vector path to AStar hash map
-std::unordered_map<std::pair<std::pair<int, int>, std::pair<int, int>>, double, HashPair> astar_map(std::vector<std::pair<int, int>> astart_path)
+std::map<std::pair<std::pair<int, int>, std::pair<int, int>>, double> astarMap(std::vector<std::pair<int, int>> astartPath)
 {
-    std::unordered_map<std::pair<std::pair<int, int>, std::pair<int, int>>, double, HashPair> astar_map;
-    for (int i = 0; i < astart_path.size() - 1; ++i) {
-        astar_map.insert(std::make_pair(astart_path[i], astart_path[i + 1]), (i + 2) * 10);
+    std::map<std::pair<std::pair<int, int>, std::pair<int, int>>, double> astar_map;
+    for (int i = 0; i < astartPath.size() - 1; ++i)
+    {
+        astar_map.insert({std::make_pair(astartPath[i], astartPath[i + 1]), (i + 20.0) * 10.0});
     }
     return astar_map;
 }
@@ -39,9 +41,13 @@ bool back_step(std::vector<std::pair<int, int>> path, std::pair<std::pair<int, i
 {
     std::pair<int, int> second_point = future_path.second;
     std::pair<int, int> first_point = future_path.first;
+    if (path.size() <= 1)
+    {
+        return false;
+    }
     for (int i = 0; i < path.size() - 1; ++i)
     {
-        if (second_point.first == path[i].first && second_point.second == path[i].second
+        if (second_point.first == path[i].first && second_point.second == path[i].second 
             && first_point.first == path[i + 1].first && first_point.second == path[i + 1].second)
         {
             return true;
@@ -69,18 +75,28 @@ double random_double_number()
 // Function use ACO-based movement of objects on dynamic maze to reach end point
 void solveDyMaze(std::vector<std::vector<bool>> &maze, const std::pair<std::pair<int, int>, std::pair<int, int>> &start_end,
                  std::unordered_map<std::pair<std::pair<int, int>, std::pair<int, int>>, double, HashPair> &pheromone_map,
-                 std::unordered_map<std::pair<std::pair<int, int>, std::pair<int, int>>, HashPair> &astar_map,
+                 std::map<std::pair<std::pair<int, int>, std::pair<int, int>>, double> &astar_map,
                  int num_objects)
 {
     // Initialize variables
-    std::vector<std::pair<int, int>> current;                         // Current point for each object
-    std::vector<std::vector<std::pair<int, int>>> paths(num_objects); // Paths taken by each object
     int num_reached = 0;                                              // Count of objects that reached the destination
     int num_not_reached = 0;                                          // Count of objects that can't reached the destination
+    std::vector<std::vector<std::pair<int, int>>> paths;
+    for (int i = 0; i < num_objects; ++i) {
+        std::vector<std::pair<int, int>> ant_path;
+        paths.push_back(ant_path);
+    } // Paths taken by each object
+    std::vector<std::pair<int, int>> current;                         // Current point for each object
+    for (int obj = 0; obj < num_objects; ++obj)
+    {
+        current.push_back(start_end.first);
+    }
+    
+    
     // Main simulation loop
     while (true)
     {
-        for (int obj = 0; obj < num_objects; obj++)
+        for (int obj = 0; obj < num_objects; ++obj)
         {
             if (current[obj] == std::make_pair(-1, -1))
             {
@@ -95,11 +111,11 @@ void solveDyMaze(std::vector<std::vector<bool>> &maze, const std::pair<std::pair
             int i = 0;
             for (auto &neighbor : neighbors)
             {
-                std::pair<std::pair<int, int>, std::pair<int, int>> future_path = std::pair<current[obj], neighbor>;
+                std::pair<std::pair<int, int>, std::pair<int, int>> future_path = std::pair{current[obj], neighbor};
                 // Decreasing the pheromone if is the back step
                 if (back_step(paths[obj], future_path))
                 {
-                    std::pair<std::pair<int, int>, std::pair<int, int>> bad_path = std::pair<future_path.second, future_path.first>;
+                    std::pair<std::pair<int, int>, std::pair<int, int>> bad_path = std::pair{future_path.second, future_path.first};
                     pheromone_map[bad_path] *= 0.6;
                 }
                 if (pheromone_map.find(future_path) != pheromone_map.end())
@@ -164,27 +180,52 @@ void solveDyMaze(std::vector<std::vector<bool>> &maze, const std::pair<std::pair
     // }
 }
 
+// int main()
+// {
+//     // Define maze and start_end
+//     std::vector<std::vector<bool>> dymaze = {};
+//     dymaze = createMaze(10, 10, 0.1);
+//     std::pair<std::pair<int, int>, std::pair<int, int>> start_end = {};
+//     start_end = selectStartAndEnd(dymaze);
+
+//     // Initialize AStar hash map path
+//     std::vector<std::pair<int, int>> astar_path = AStar(dymaze, start_end.first, start_end.second);
+//     std::unordered_map<std::pair<std::pair<int, int>, std::pair<int, int>>, HashPair> astar_map;
+//     astar_map = astar_map(astar_path);
+    
+//     // Initialize pheromone_map
+//     std::unordered_map<std::pair<std::pair<int, int>, std::pair<int, int>>, double, HashPair> pheromone_map;
+//     pheromone_map = pheromoneMap(dymaze, start_end.first, start_end.second);
+
+//     // Number of objects
+//     int num_objects = 10;
+
+//     // Run the solve for dynamic maze
+//     solveDyMaze(dymaze, start_end, pheromone_map, astar_map, num_objects);
+
+//     return 0;
+// }
+
 int main()
 {
     // Define maze and start_end
-    std::vector<std::vector<bool>> dymaze = {};
-    dymaze = createMaze(10, 10, 0.1);
-    std::pair<std::pair<int, int>, std::pair<int, int>> start_end = {};
-    start_end = selectStartAndEnd(dymaze);
+    std::vector<std::vector<bool>> dymaze = createMaze(10, 10, 0.1);
+    std::pair<std::pair<int, int>, std::pair<int, int>> start_end = selectStartAndEnd(dymaze);
 
-    // Initialize AStar hash map path
-    std::vector<std::pair<int, int>> astar_path = AStar(dymaze, start_end.first, start_end.second);
-    std::unordered_map<std::pair<std::pair<int, int>, std::pair<int, int>>, HashPair> astar_map;
-    astar_map = astar_map(astar_path);
-    
-    // Initialize pheromone_map
-    std::unordered_map<std::pair<std::pair<int, int>, std::pair<int, int>>, double, HashPair> pheromone_map;
-    pheromone_map = pheromoneMap(dymaze, start_end.first, start_end.second);
+    // // Initialize AStar hash map path
+    std::vector<std::pair<int, int>> astarPath = AStar(dymaze, start_end.first, start_end.second);
+    std::map<std::pair<std::pair<int, int>, std::pair<int, int>>, double> astar_map = astarMap(astarPath);
+    // // Initialize pheromone_map
+    std::unordered_map<std::pair<std::pair<int, int>, std::pair<int, int>>, double, HashPair> pheromone_map = pheromoneMap(dymaze, start_end.first, start_end.second);
 
-    // Number of objects
+    // // Number of objects
     int num_objects = 10;
 
-    // Run the solve for dynamic maze
+    // // Initialize variables
+    std::vector<std::pair<int, int>> current(num_objects, start_end.first);
+    std::vector<std::vector<std::pair<int, int>>> paths(num_objects, std::vector<std::pair<int, int>>());
+
+    // // Run the solve for dynamic maze
     solveDyMaze(dymaze, start_end, pheromone_map, astar_map, num_objects);
 
     return 0;

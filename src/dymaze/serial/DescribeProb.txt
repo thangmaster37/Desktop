@@ -81,3 +81,22 @@ thì thực hiện update maze như cách tôi đã nêu ở trên.
 
 Điều kiện dừng ở đây là số object bị chết (có <-1; -1> ở cuối hành trình) + số object đến đích = số object xuất phát.
 Hãy viết giải thuật C++ làm những điều tôi vừa nói.
+
+----------------------------------------
+Tiêu chí chấm điểm thuyết trình môn TTSS 
+Thời gian thuyết trình:
+Đặt vấn đề
+Review các phương pháp khác
+Phương pháp nào được sử dụng
+Ứng dụng cụ thể:
+Cách trình bày cuốn hút:
+
+----------------------------------------
+Những nhóm đc 8: 
++ Tối ưu thời gian, chi phí trong dự án có công tác lặp lại 
+
+
++ Chuyên môn hóa - phân rõ việc (thầy chỉ hỏi phần mk code)
++ Maze nhỏ của mk: đưa lực lượng cứu hộ đến điểm đích nhanh nhất - nhiều lực lượng cứu hộ đến nhất
++ Maze lớn của mk: đưa đội quân (chia nhỏ ra) - đưa nhiều quân an toàn đến đích nhanh nhất
+

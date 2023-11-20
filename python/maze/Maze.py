@@ -1,7 +1,13 @@
 # Author __Pham Ngoc Hai - Harito__
+import sys, os
+# Get the parent directory
+package_path = "./python"
+# Add the parent directory to sys.path
+sys.path.append(os.path.abspath(package_path))
+
 import numpy as np
-from stmaze import AStar
-from stmaze import ACO 
+from stmaze.AStar import AStar
+from stmaze.AStar import ACO 
 
 class Maze:
     # Create a maze with rows, cols and obstacle_prob para or create a Maze with random maze value
@@ -67,19 +73,19 @@ class Maze:
     def print(self):
         print(self.__str__())
 
-    # Solve 
-    def solve(self, method: str, type: str):
-        if method == 'AStar':
-            if type == 'Path':
-                return AStar.path(self.maze)
-            elif type == 'Map':
-                return AStar.map(self.maze)
-            else:
-                return Exception('Only support "Path" and "Map"')
-        elif method == 'ACO':
-            return 
-        else:
-            return Exception('Only support "AStar" and "ACO"')
+    # # Solve 
+    # def solve(self, method: str, type: str):
+    #     if method == 'AStar':
+    #         if type == 'Path':
+    #             return AStar.path(self.maze)
+    #         elif type == 'Map':
+    #             return AStar.map(self.maze)
+    #         else:
+    #             return Exception('Only support "Path" and "Map"')
+    #     elif method == 'ACO':
+    #         return 
+    #     else:
+    #         return Exception('Only support "AStar" and "ACO"')
 
 
 def main():

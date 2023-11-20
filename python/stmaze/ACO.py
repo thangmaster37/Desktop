@@ -1,5 +1,11 @@
 # Author __Luong Duc Anh__
-from maze.Maze import Maze # Chưa tìm được cách import : <<<<
+import sys, os
+# Get the parent directory
+package_path = "./python"
+# Add the parent directory to sys.path
+sys.path.append(os.path.abspath(package_path))
+
+from maze.Maze import Maze
 from collections import defaultdict
 import random
 import math
@@ -58,13 +64,14 @@ class ACO():
                 self.pheromone_map[trail] *= (1 - self.evaporation_rate)
             for trail, value in pheromone_delta.items():
                 self.pheromone_map[trail] += value
+        return best_path
 
     def to_dict(self):
         return self.pheromone_map
 
 
 if __name__ == "__main__":
-    my_maze = Maze([[False, False, False, False, False, False, False, False, False, False],
+    my_maze = Maze.array([[False, False, False, False, False, False, False, False, False, False],
                     [False, False, False, False, False, False, False, False, False, False],
                     [False, False, False, False, False, False, False, False, False, False],
                     [False, False, False, False, False, False, False, False, False, False],
@@ -74,7 +81,7 @@ if __name__ == "__main__":
                     [False, False, False, False, False, False, False, False, False, False],
                     [False, False, False, False, False, False, False, False, False, False],
                     [False, False, False, False, False, False, False, False, False, False],
-                    [False, False, False, False, False, False, False, False, False, False],
-                    ])
-    # aco = ACO(my_maze)
-    # print(ACO.solve((0, 0), (5, 5)))
+                    [False, False, False, False, False, False, False, False, False, False]])
+    # print(my_maze)
+    aco = ACO(my_maze)
+    print(aco.solve((0, 0), (5, 5)))

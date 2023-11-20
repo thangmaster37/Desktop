@@ -55,6 +55,8 @@ class Maze:
                 neighbors.append(neighbor)
         return neighbors
 
+    def solve(self, ) 
+
 def main():
     # Sử dụng lớp Maze
     rows = 5  # Số hàng 

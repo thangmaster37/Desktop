@@ -4,22 +4,19 @@
 import numpy as np
 
 class Maze:
-    def __init__(self, rows, cols, obstacle_prob):
-        self.rows = rows
-        self.cols = cols
-        self.obstacle_prob = obstacle_prob
-        self.maze = self._create_maze()
-
-    def _create_maze(self):
-        maze = np.full((self.rows, self.cols), False, dtype=bool)
-        random_values = np.random.rand(self.rows, self.cols)
-        maze[random_values < self.obstacle_prob] = True
-        return maze
+    def __init__(self, rows=None, cols=None, obstacle_prob=None):
+        if rows == None or cols == None or obstacle_prob == None:
+            self.maze = None
+            return
+        random_values = np.random.rand(rows, cols)
+        self.maze = np.full((rows, cols), False, dtype=bool)
+        self.maze[random_values < obstacle_prob] = True
 
     def change_maze(self, prob_false_to_true, prob_true_to_false):
         is_live_maze = True
-        for i in range(self.rows):
-            for j in range(self.cols):
+        shape = self.maze.shape
+        for i in range(shape[0]):
+            for j in range(shape[1]):
                 random_value = np.random.rand()
                 if not self.maze[i, j] and random_value < prob_false_to_true:
                     self.maze[i, j] = True
@@ -30,39 +27,49 @@ class Maze:
         return is_live_maze
 
     def clone_maze(self):
-        return np.copy(self.maze)
-
-    def change_clone_maze(self, prob_false_to_true, prob_true_to_false):
-        new_maze = self.clone_maze()
-        for i in range(self.rows):
-            for j in range(self.cols):
-                random_value = np.random.rand()
-                if not new_maze[i, j] and random_value < prob_false_to_true:
-                    new_maze[i, j] = True
-                elif new_maze[i, j] and random_value < prob_true_to_false:
-                    new_maze[i, j] = False
+        new_maze = Maze()
+        new_maze.maze = np.copy(self.maze)
         return new_maze
 
-# Sử dụng lớp Maze
-rows = 5  # Số hàng
-cols = 5  # Số cột
-obstacle_prob = 0.3  # Xác suất ô bị chặn
+    def can_pass(self, current:tuple):
+        return current[0] >= 0 and current[1] >= 0 \
+            and current[0] < self.maze.shape[0] \
+            and current[1] < self.maze.shape[1] \
+            and not self.maze[current[0], current[1]]
 
-maze_instance = Maze(rows, cols, obstacle_prob)
+    def neighbors(self, current:tuple):
+        neighbors = []
+        directions = ((-1, 0), (0, 1), (1, 0), (0, -1))
+        for move in directions:
+            neighbor = tuple(current[0] + move[0], current[1] + move[1])
+            if self.can_pass(neighbor):
+                neighbors.append(neighbor)
+        return neighbors
 
-# Gọi các phương thức của lớp Maze
-print("Initial Maze:")
-print(maze_instance.maze)
+def __main__():
+    # Sử dụng lớp Maze
+    rows = 5  # Số hàng 
+    cols = 5  # Số cột
+    obstacle_prob = 0.3  # Xác suất ô bị chặn
 
-is_live_maze = maze_instance.change_maze(0.5, 0)
-print("Changed Maze:")
-print(maze_instance.maze)
-print("Is Live Maze:", is_live_maze)
+    maze_instance = Maze(rows, cols, obstacle_prob)
 
-cloned_maze = maze_instance.clone_maze()
-print("Cloned Maze:")
-print(cloned_maze)
+    # Gọi các phương thức của lớp Maze
+    print("Initial Maze:")
+    print(maze_instance.maze)
 
-new_maze = maze_instance.change_clone_maze(0.5, 0)
-print("New Maze:")
-print(new_maze)
+    is_live_maze = maze_instance.change_maze(0.5, 0)
+    print("Changed Maze:")
+    print(maze_instance.maze)
+    print("Is Live Maze:", is_live_maze)
+
+    cloned_maze = maze_instance.clone_maze()
+    print("Cloned Maze:")
+    print(cloned_maze.maze)
+
+    is_live_maze = cloned_maze.change_maze(0.2, 0)
+    print("Change cloned Maze:")
+    print(cloned_maze.maze)
+    print("Is Live Maze:", is_live_maze)
+
+__main__()

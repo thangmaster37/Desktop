@@ -13,6 +13,6 @@ class ACO():
     def solve(maze: Maze):
         return # [start, (x,y), (a, b), ..., end] - numpy array <=> ACO.aco()[0]
     
-    def to_dict(): 
+    def map(): 
 
         return # a dictionary about pheromone map <=> ACO.aco()[1]

@@ -8,7 +8,7 @@ class AStar():
     def solve(maze: Maze):
         return # [start, (x,y), (a, b), ..., end] - numpy array
     
-    def to_dict(): 
+    def map(): 
         # transform numpy array - A* path: self.astar_path to a dict
         
         return # a dictionary{start: (x, y), (x, y): (a, b), (a, b): ..., ...., ...: end}

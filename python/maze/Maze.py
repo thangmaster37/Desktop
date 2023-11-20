@@ -1,5 +1,7 @@
 # Author __Pham Ngoc Hai - Harito__
 import numpy as np
+from stmaze import AStar
+from stmaze import ACO 
 
 class Maze:
     # Create a maze with rows, cols and obstacle_prob para or create a Maze with random maze value
@@ -66,13 +68,18 @@ class Maze:
         print(self.__str__())
 
     # Solve 
-    def solve(self, method: str):
+    def solve(self, method: str, type: str):
         if method == 'AStar':
-            return 
+            if type == 'Path':
+                return AStar.path(self.maze)
+            elif type == 'Map':
+                return AStar.map(self.maze)
+            else:
+                return Exception('Only support "Path" and "Map"')
         elif method == 'ACO':
             return 
         else:
-            return Exception('Not supported method')
+            return Exception('Only support "AStar" and "ACO"')
 
 
 def main():

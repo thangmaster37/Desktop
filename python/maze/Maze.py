@@ -71,9 +71,9 @@ class Maze:
     def solve(self, method: str, type: str):
         if method == 'AStar':
             if type == 'Path':
-                return AStar.solve(self.maze)
+                return AStar.path(self.maze)
             elif type == 'Map':
-                return AStar.
+                return AStar.map(self.maze)
             else:
                 return Exception('Only support "Path" and "Map"')
         elif method == 'ACO':

@@ -2,13 +2,11 @@
 from maze import Maze
 
 class AStar():
-    def __init__(self, maze: Maze):
-        self.astar_path = self.path(maze)
-
-    def path(maze: Maze):
-        return # [start, (x,y), (a, b), ..., end] - numpy array
+    def astar_path(maze: Maze):
+        return None # [start, (x,y), (a, b), ..., end] - numpy array
     
-    def map(): 
+    def map(maze: Maze): 
+        astar_path = astar_path(maze)
         # transform numpy array - A* path: self.astar_path to a dict
         
-        return # a dictionary{start: (x, y), (x, y): (a, b), (a, b): ..., ...., ...: end}
+        return None # a dictionary{start: (x, y), (x, y): (a, b), (a, b): ..., ...., ...: end}

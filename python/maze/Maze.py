@@ -6,6 +6,7 @@
 import numpy as np
 
 class Maze:
+    # Create a maze with rows, cols and obstacle_prob para or create a Maze with no maze info 
     def __init__(self, rows=None, cols=None, obstacle_prob=None):
         if rows == None or cols == None or obstacle_prob == None:
             self.maze = None

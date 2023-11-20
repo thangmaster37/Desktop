@@ -14,6 +14,5 @@ class ACO():
         return # [start, (x,y), (a, b), ..., end] - numpy array <=> ACO.aco()[0]
     
     def to_dict(): 
-        # transform numpy array - ACO path: self.aco_path to a dict
 
-        return # a dictionary about pheromone map <=> ACO.aco()[1``]
+        return # a dictionary about pheromone map <=> ACO.aco()[1]

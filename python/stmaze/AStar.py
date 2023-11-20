@@ -3,9 +3,9 @@ from maze import Maze
 
 class AStar():
     def __init__(self, maze: Maze):
-        self.astar_path = self.solve(maze)
+        self.astar_path = self.path(maze)
 
-    def solve(maze: Maze):
+    def path(maze: Maze):
         return # [start, (x,y), (a, b), ..., end] - numpy array
     
     def map(): 

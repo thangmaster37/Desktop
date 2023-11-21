@@ -12,7 +12,7 @@ import math
 
 class ACO():
     def __init__(self,
-                 num_ants=1,
+                 num_ants=30,
                  iterations=30,
                  pheromone_const=1000.0,
                  evaporation_rate=0.4,

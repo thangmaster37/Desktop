@@ -6,8 +6,8 @@ package_path = "./python"
 sys.path.append(os.path.abspath(package_path))
 
 import numpy as np
-from stmaze.AStar import AStar
-from stmaze.AStar import ACO 
+# from stmaze.AStar import AStar
+# from stmaze.AStar import ACO 
 
 class Maze:
     # Create a maze with rows, cols and obstacle_prob para or create a Maze with random maze value

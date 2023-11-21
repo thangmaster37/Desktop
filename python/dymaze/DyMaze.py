@@ -8,4 +8,5 @@ sys.path.append(os.path.abspath(package_path))
 from maze.Maze import Maze
 
 class DyMaze(Maze):
+    
     pass

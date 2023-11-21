@@ -26,12 +26,7 @@ class ACO():
         self.alpha = alpha
         self.pheromone_map = defaultdict(lambda: 0.1)
 
-    # def aco(maze: Maze):
-    #     # ...
-    #     # return a tuple of (aco_path, pheromone_map)
-    #     pass
-
-    def solve(self, start: tuple, end: tuple):
+    def aco(self, start: tuple, end: tuple):
         best_path = None
         best_path_length = float('inf')
         for _ in range(self.iterations):
@@ -66,7 +61,7 @@ class ACO():
                 self.pheromone_map[trail] += value
         return best_path
 
-    def to_dict(self):
+    def map(self):
         return self.pheromone_map
 
 

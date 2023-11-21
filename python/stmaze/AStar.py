@@ -7,12 +7,21 @@ sys.path.append(os.path.abspath(package_path))
 
 from maze.Maze import Maze
 
+class AStar():
+    def __init__(self, maze: Maze):
+        self.maze = maze
+        self.astar_map = {}
 
-def astar_path(maze: Maze):
-    return None # [start, (x,y), (a, b), ..., end] - numpy array
+    def heuristic():
+        # ... tasks: Duc complete the code in here
+        pass
 
-def map(maze: Maze): 
-    astar_path = astar_path(maze)
-    # transform numpy array - A* path: self.astar_path to a dict
-    
-    return None # a dictionary{start: (x, y), (x, y): (a, b), (a, b): ..., ...., ...: end}
+    def astar(self, start: tuple, end: tuple):
+        self.astar_map = {}     # restart the value of self.astar_map
+        astar_path = None
+        # transform numpy array - A* path: astar_path to a dict
+        # ... tasks: Duc complete the code in here
+        return astar_path # [start, (x,y), (a, b), ..., end] - numpy array
+
+    def map(self):  
+        return self.astar_map # a dictionary{start: (x, y), (x, y): (a, b), (a, b): ..., ...., ...: end}

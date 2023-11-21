@@ -7,6 +7,10 @@ sys.path.append(os.path.abspath(package_path))
 
 from maze.Maze import Maze
 
+class Compare_Algorithm:
+    def __init__():
+        
+
 class Visualization(Maze):
     def __init__():
         return

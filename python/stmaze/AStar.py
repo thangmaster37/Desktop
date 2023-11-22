@@ -12,23 +12,21 @@ import numpy as np
 class AStar():
     def __init__(self, maze: Maze):
         self.maze = maze
-        self.astar_map = {}
+        self.astar_map = []
 
     def astar(self, start: tuple, end: tuple):
-        
+        heuristic = lambda x, y, z, t: abs(x-z) + abs(y-t)   
         count = 0
         open_queue = PriorityQueue()
-        open_set = {start}
-        node_path = {}
+        open_set = [start]
+        node_path = []
         astar_path_list = []
-        heuristic = lambda x, y: abs(x[0] - y[0]) + abs(x[1] - y[1])
-        
         open_queue.put((0, count, start))
 
-        g_score = [[float("inf") for spot in row] for row in self.maze.array()]
+        g_score = [[float("inf") for spot in row] for row in self.maze.maze]
         g_score[start[0]][start[1]] = 0
-        f_score = [[float('inf') for spot in row] for row in self.maze.array()]
-        f_score[start[0]][start[1]] = heuristic(start, end)
+        f_score = [[float('inf') for spot in row] for row in self.maze.maze]
+        f_score[start[0]][start[1]] = heuristic(start[0], start[1], end[0], end[1])
         
         while not open_queue.empty():
             #... tasks: Duc complete the code in here
@@ -55,11 +53,21 @@ class AStar():
                         open_set.add(neighbor)
                         
         # transform numpy array - A* path: astar_path to a dict
-        self.astar_path = {}
+        self.astar_path = []
         for node in astar_path_list:
             self.astar_path[node] = node_path[node]
         # ... tasks: Duc complete the code in here
         return self.astar_path # [start, (x,y), (a, b), ..., end] - numpy array
 
     def map(self):  
-        return self.astar_map # a dictionary{start: (x, y), (x, y): (a, b), (a, b): ..., ...., ...: end}
+        return self.astar_map # a dictionary[start: (x, y), (x, y): (a, b), (a, b): ..., ...., ...: end]
+    
+if __name__ == "__main__":
+    my_maze = Maze.array([
+         [False, False, False, False, False],
+         [True, True, False, True, False],
+         [False, False, False, False, False],
+         [False, True, True, True, False],
+         [False, False, False, False, False]])
+    # print(my_maze)
+    # astar = AStar(my_maze)

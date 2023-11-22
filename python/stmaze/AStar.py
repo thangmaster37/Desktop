@@ -7,17 +7,20 @@ sys.path.append(os.path.abspath(package_path))
 
 from maze.Maze import Maze
 from queue import PriorityQueue
+import numpy as np
+
 class AStar():
     def __init__(self, maze: Maze):
         self.maze = maze
+        self.astar_map = {}
 
     def astar(self, start: tuple, end: tuple):
         
         count = 0
         open_queue = PriorityQueue()
         open_set = {start}
-        node_path = dict()
-        
+        node_path = {}
+        astar_path_list = []
         heuristic = lambda x, y: abs(x[0] - y[0]) + abs(x[1] - y[1])
         
         open_queue.put((0, count, start))
@@ -32,13 +35,12 @@ class AStar():
             current_node = open_queue.get()[2]
             open_set.remove(current_node)
             if current_node == end:
-                astar_path = []
                 while current_node!= start:
-                    astar_path.append(current_node)
+                    astar_path_list.append(current_node)
                     current_node = open_set[current_node]
-                astar_path.append(start)
-                astar_path.reverse()
-                return astar_path
+                astar_path_list.append(start)
+                astar_path_list.reverse()
+                break
             
             neighbors = self.maze.get_neighbors()
             for neighbor in neighbors:
@@ -51,11 +53,13 @@ class AStar():
                         count +=1 
                         open_queue.put(f_score[neighbor[0]][neighbor[1]], count, neighbor)
                         open_set.add(neighbor)
-            
-            
+                        
         # transform numpy array - A* path: astar_path to a dict
+        self.astar_path = {}
+        for node in astar_path_list:
+            self.astar_path[node] = node_path[node]
         # ... tasks: Duc complete the code in here
-        return astar_path # [start, (x,y), (a, b), ..., end] - numpy array
+        return self.astar_path # [start, (x,y), (a, b), ..., end] - numpy array
 
     def map(self):  
         return self.astar_map # a dictionary{start: (x, y), (x, y): (a, b), (a, b): ..., ...., ...: end}

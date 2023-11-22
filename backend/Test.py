@@ -22,3 +22,4 @@ class Compare_Papers:
     # When work with static maze and dynamic maze
     def __init__():
         pass
+    

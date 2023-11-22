@@ -1,14 +1,58 @@
 # Author __Luong Duc Anh__
-import sys
-import os
-
-package_path = "./python"
-sys.path.append(os.path.abspath(package_path))
-
-from maze.Maze import Maze
-from collections import defaultdict
+# Author __Tran Minh Duc__
+# ------------------------
+import Maze
 import random
 import math
+import numpy as np
+from queue import PriorityQueue
+from collections import defaultdict
+
+class AStar():
+    def astar(self, maze: Maze, start: tuple, end: tuple):
+        def heuristic(p1, p2): return abs(p1[0] - p2[0]) + abs(p1[1] - p2[1])
+        g_score = np.full((maze.rows, maze.cols), np.iinfo(np.int32).max, dtype=np.int32)
+        g_score[start] = 0
+        f_score = np.full((maze.rows, maze.cols), np.iinfo(np.int32).max, dtype=np.int32)
+        f_score[start] = heuristic(start, end)
+        
+        open = PriorityQueue()
+        open.put((heuristic(start, end), heuristic(start, end), start))
+        a_path = {}
+        
+        while not open.empty():
+            current = open.get()[2]
+            if current == end:
+                break
+            neighbors = maze.get_neighbors(current)
+            for neighbor in neighbors:
+                temp_g_score = g_score[current] + 1
+                temp_f_score = temp_g_score + heuristic(neighbor, end)
+                
+                if temp_f_score < f_score[neighbor]:
+                    g_score[neighbor] = temp_g_score
+                    f_score[neighbor] = temp_f_score
+                    open.put((temp_f_score, heuristic(neighbor, end), neighbor))
+                    a_path[neighbor] = current
+        fwd_path = {}
+        cell = end
+        path = [end]
+        while cell != start:
+            fwd_path[a_path[cell]] = cell
+            path.insert(0, a_path[cell])
+            cell = a_path[cell]
+        return path, fwd_path
+
+def test_AStar():
+    my_maze = Maze.array([
+        [False, False, False, False, False],
+        [True, True, False, True, False],
+        [False, False, False, False, False],
+        [False, True, True, True, False],
+        [False, False, False, False, False]])
+    # print(my_maze)
+    astar = AStar()
+    print(astar.astar(my_maze, (0, 0), (4, 4))[0])
 
 class ACO():
     def __init__(self,
@@ -59,8 +103,7 @@ class ACO():
                 pheromone_map[trail] += value
         return best_path, pheromone_map
 
-
-if __name__ == "__main__":
+def test_ACO():
     my_maze = Maze.array([[False, False, False, False, False, False, False, False, False, False],
                           [False, False, False, False, False,
                               False, False, False, False, False],

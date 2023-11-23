@@ -1,6 +1,6 @@
 # Author __Pham Ngoc Hai - Harito__
 # ---------------------------------
-import Maze
+from maze import Maze
 
 class DyMaze(Maze):
     # Step 0. Prepare maze

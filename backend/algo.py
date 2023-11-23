@@ -1,7 +1,7 @@
 # Author __Luong Duc Anh__
 # Author __Tran Minh Duc__
 # ------------------------
-import Maze
+from maze import Maze
 import random
 import math
 import numpy as np
@@ -37,10 +37,10 @@ class AStar():
                     a_path[neighbor] = current
         fwd_path = {}
         cell = end
-        # path = [end]
+        path = [end]
         while cell != start:
             fwd_path[a_path[cell]] = cell
-            # path.insert(0, a_path[cell])
+            path.insert(0, a_path[cell])
             cell = a_path[cell]
         return  fwd_path
 

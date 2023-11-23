@@ -1,13 +1,14 @@
 DynamicMaze
-    |___python (backend)
+    |___backend
     |       |___maze (maze structure)
     |       |       |___Maze.py                                                                 # Hai
-    |       |___stmaze (algorithms - serial and parallel in static maze)            
-    |       |       |___AStar.py (get optimize path)                                            # Duc
-    |       |       |___ACO.py (get pheromone map)                                              # D.Anh
+    |       |___algorithms - serial and parallel in static maze            
+    |       |       |___AStar (get optimize path)                                               # Duc
+    |       |       |___ACO (get pheromone map)                                                 # D.Anh
     |       |___dymaze (main problem)
-    |       |       |___DyMaze.py (use result from stmaze and custom ... to solve)              # Hai
+    |       |       |___DyMaze (use result from maze and custom ... to solve)                   # Hai
     |       |___test (performance evaluation - comparison with other articles)
-    |               |___Visualization.py (test and visual result)                               # Thang
+    |               |___Test and visual result                                                  # Thang
+    |
     |___gui (graphic user interface)                                                            # Hai 
             |___

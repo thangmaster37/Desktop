@@ -5,6 +5,7 @@ import Maze
 import random
 import math
 import numpy as np
+import timeit
 from queue import PriorityQueue
 from collections import defaultdict
 
@@ -36,23 +37,52 @@ class AStar():
                     a_path[neighbor] = current
         fwd_path = {}
         cell = end
-        path = [end]
+        # path = [end]
         while cell != start:
             fwd_path[a_path[cell]] = cell
-            path.insert(0, a_path[cell])
+            # path.insert(0, a_path[cell])
             cell = a_path[cell]
-        return path, fwd_path
+        return  fwd_path
 
 def test_AStar():
-    my_maze = Maze.array([
-        [False, False, False, False, False],
-        [True, True, False, True, False],
-        [False, False, False, False, False],
-        [False, True, True, True, False],
-        [False, False, False, False, False]])
+    # Sử dụng lớp Maze
+    rows = 25 # Số hàng
+    cols = 25 # Số cột
+    obstacle_prob = 0.3  # Xác suất ô bị chặn
+
+    my_maze = Maze.Maze((rows, cols), obstacle_prob).array([
+            [False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False],
+            [False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False],
+            [False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False],
+            [False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False],
+            [False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False],
+            [False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False],
+            [False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False],
+            [False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False],
+            [False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False],
+            [False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False],
+            [False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False],
+            [False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False],
+            [False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False],
+            [False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False],
+            [False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False],
+            [False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False],
+            [False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False],
+            [False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False],
+            [False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False],
+            [False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False],
+            [False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False],
+            [False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False],
+            [False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False],
+            [False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False],
+            [False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False]])
+    
+
     # print(my_maze)
     astar = AStar()
-    print(astar.astar(my_maze, (0, 0), (4, 4))[0])
+    print(timeit.timeit(lambda: astar.astar(my_maze, (0, 0), (24, 24)), number=1))
+    print(astar.astar(my_maze, (0, 0), (24, 24)))
+
 
 class ACO():
     def __init__(self,
@@ -104,26 +134,20 @@ class ACO():
         return best_path, pheromone_map
 
 def test_ACO():
-    my_maze = Maze.array([[False, False, False, False, False, False, False, False, False, False],
-                          [False, False, False, False, False,
-                              False, False, False, False, False],
-                          [False, False, False, False, False,
-                              False, False, False, False, False],
-                          [False, False, False, False, False,
-                              False, False, False, False, False],
-                          [False, False, False, False, False,
-                              False, False, False, False, False],
-                          [False, False, False, False, False,
-                              False, False, False, False, False],
-                          [False, False, False, False, False,
-                              False, False, False, False, False],
-                          [False, False, False, False, False,
-                              False, False, False, False, False],
-                          [False, False, False, False, False,
-                              False, False, False, False, False],
-                          [False, False, False, False, False,
-                              False, False, False, False, False],
+    my_maze = Maze.Maze((5, 5), 0.3).array([[False, False, False, False, False, False, False, False, False, False],
+                          [False, False, False, False, False, False, False, False, False, False],
+                          [False, False, False, False, False, False, False, False, False, False],
+                          [False, False, False, False, False, False, False, False, False, False],
+                          [False, False, False, False, False, False, False, False, False, False],
+                          [False, False, False, False, False, False, False, False, False, False],
+                          [False, False, False, False, False, False, False, False, False, False],
+                          [False, False, False, False, False, False, False, False, False, False],
+                          [False, False, False, False, False, False, False, False, False, False],
+                          [False, False, False, False, False, False, False, False, False, False],
                           [False, False, False, False, False, False, False, False, False, False]])
     # print(my_maze)
     aco = ACO()
     print(aco.aco(my_maze, (0, 0), (5, 5))[0])
+
+
+# test_AStar()

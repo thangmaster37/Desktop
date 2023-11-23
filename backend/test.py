@@ -10,9 +10,10 @@ import timeit
 from memory_profiler import profile
 import pandas as pd, plotly.express as px
 
-import Maze
 # import DyMaze
-import Algo
+from algo import ACO, AStar
+from maze import Maze
+from dymaze import DyMaze
 
 class Compare_Algorithms():
     # When work with static maze (serial and parallel)
@@ -22,8 +23,8 @@ class Compare_Algorithms():
         self.end = end
 
     def compare_time(self):
-        list_time_astar = timeit.repeat(lambda: Algo.AStar().astar(self.maze, self.start, self.end), number=1, repeat=5)
-        list_time_aco = timeit.repeat(lambda: Algo.ACO().aco(self.maze, self.start, self.end), number=1, repeat=5)
+        list_time_astar = timeit.repeat(lambda: AStar().astar(self.maze, self.start, self.end), number=1, repeat=3)
+        list_time_aco = timeit.repeat(lambda: ACO().aco(self.maze, self.start, self.end), number=1, repeat=3)
         _astar_aco = list(zip(list_time_astar, list_time_aco))
         return _astar_aco
     
@@ -40,12 +41,12 @@ class Compare_Algorithms():
     
     @profile
     def memory_astar(self):
-        path_astar = Algo.AStar().astar(self.maze, self.start, self.end)
+        path_astar = AStar().astar(self.maze, self.start, self.end)
         return path_astar
 
     @profile
     def memory_aco(self):
-        path_aco = Algo.ACO().aco(self.maze, self.start, self.end)
+        path_aco = ACO().aco(self.maze, self.start, self.end)
         return path_aco
 
 # class Test(DyMaze):
@@ -69,7 +70,7 @@ if __name__ == "__main__":
     cols = 25 # Số cột
     obstacle_prob = 0.3  # Xác suất ô bị chặn
 
-    maze = Maze.Maze((rows, cols), obstacle_prob).array([
+    maze = Maze((rows, cols), obstacle_prob).array([
             [False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False],
             [False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False],
             [False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False, False],

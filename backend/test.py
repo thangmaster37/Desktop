@@ -49,20 +49,20 @@ class Compare_Algorithms():
         path_aco = ACO().aco(self.maze, self.start, self.end)
         return path_aco
 
-# class Test(DyMaze):
-#     # When work with dynamic maze (serial and parallel)
-#     def __init__():
-#         pass
+class Test(DyMaze):
+    # When work with dynamic maze (serial and parallel)
+    def __init__():
+        pass
 
 class Compare_Papers:
     # When work with static maze and dynamic maze
     def __init__():
         pass
 
-# class Visualization(Test):
-#     # Visualization the result from Test
-#     def __init__():
-#         pass
+class Visualization(Test):
+    # Visualization the result from Test
+    def __init__():
+        pass
 
 if __name__ == "__main__":
     # Sử dụng lớp Maze

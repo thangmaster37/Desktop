@@ -1,7 +1,7 @@
 # Author __Nguyen Van Thang__
 # ---------------------------
-import Maze
-import DyMaze
+from maze import Maze
+from dymaze import Dymaze
 
 class Compare_Algorithms(Maze):
     # When work with static maze (serial and parallel)

@@ -1045,3 +1045,7 @@ dkms.conf
 *.dis
 
 tempCodeRunnerFile.cpp
+
+# Unsaved file
+*.bkp   
+# Eg: .$xxx.drawio.bkp

@@ -26,7 +26,6 @@ private:
     //     {
     //         auto hash1 = std::hash<T1>{}(p.first);
     //         auto hash2 = std::hash<T2>{}(p.second);
-
     //         return hash1 ^ hash2;
     //     }
     // };
@@ -55,7 +54,7 @@ private:
     }
 
 public:
-    ACO(int num_ants = 30, int iterations = 30, double pheromone_const = 1000.0, double evaporation_rate = 0.4, double alpha = 0.3)
+    ACO(int num_ants = 15, int iterations = 15, double pheromone_const = 1000.0, double evaporation_rate = 0.4, double alpha = 0.3)
         : num_ants(num_ants), iterations(iterations), pheromone_const(pheromone_const), evaporation_rate(evaporation_rate), alpha(alpha) {}
 
     std::pair<std::vector<std::pair<int, int>>, std::unordered_map<std::pair<std::pair<int, int>, std::pair<int, int>>, double, HashPair>>

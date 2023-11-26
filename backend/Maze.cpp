@@ -50,7 +50,7 @@ public:
 
     Maze(std::vector<std::vector<bool>> maze)
     {
-        this -> maze = maze;
+        this->maze = maze;
         rows = maze.size();
         cols = maze.at(0).size();
     }
@@ -63,6 +63,11 @@ public:
     int getWidth()
     {
         return cols;
+    }
+
+    void setValue(std::pair<int, int> pos, bool value)
+    {
+        maze[pos.first][pos.second] = value;
     }
 
     // Hàm chọn ngẫu nhiên hai ô có giá trị false làm điểm bắt đầu và điểm kết thúc
@@ -169,7 +174,7 @@ public:
 //     // Maze myMaze = {{false, false, true}, {false, true, false}, {false, false, false}};
 //     std::cout << "The origen maze..." << std::endl;
 //     myMaze.print();
-    
+
 //     std::cout << "The copy maze: " << std::endl;
 //     Maze copyMaze = myMaze.copy();
 //     copyMaze.print();

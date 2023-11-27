@@ -1,3 +1,4 @@
+#pragma once
 #include <omp.h>
 #include <unordered_map>
 #include <unordered_set>
@@ -13,25 +14,8 @@
 
 class ACO
 {
-private:
-    int num_ants;
-    int iterations;
-    double pheromone_const;
-    double evaporation_rate;
-    double alpha;
-
-    // struct HashPair
-    // {
-    //     template <class T1, class T2>
-    //     std::size_t operator()(const std::pair<T1, T2> &p) const
-    //     {
-    //         auto hash1 = std::hash<T1>{}(p.first);
-    //         auto hash2 = std::hash<T2>{}(p.second);
-    //         return hash1 ^ hash2;
-    //     }
-    // };
-
-    struct HashPair
+public:
+    struct HashPairACO
     {
         template <class T1, class T2, class T3, class T4>
         std::size_t operator()(const std::pair<std::pair<T1, T2>, std::pair<T3, T4>> &p) const
@@ -45,28 +29,35 @@ private:
         }
     };
 
+private:
+    int num_ants;
+    int iterations;
+    double pheromone_const;
+    double evaporation_rate;
+    double alpha;
+
 public:
     ACO(int num_ants = 30, int iterations = 30, double pheromone_const = 1000.0, double evaporation_rate = 0.3, double alpha = 0.6)
         : num_ants(num_ants), iterations(iterations), pheromone_const(pheromone_const), evaporation_rate(evaporation_rate), alpha(alpha) {}
 
-    std::pair<std::vector<std::pair<int, int>>, std::unordered_map<std::pair<std::pair<int, int>, std::pair<int, int>>, double, HashPair>>
+    std::pair<std::vector<std::pair<int, int>>, std::unordered_map<std::pair<std::pair<int, int>, std::pair<int, int>>, double, HashPairACO>>
     solve_serial(Maze &maze, std::pair<int, int> start, std::pair<int, int> end)
     {
         std::mt19937 gen(time(nullptr));
         std::vector<std::pair<int, int>> best_path;
         int best_path_length = INT_MAX;
-        std::unordered_map<std::pair<std::pair<int, int>, std::pair<int, int>>, double, HashPair> pheromone_map;
+        std::unordered_map<std::pair<std::pair<int, int>, std::pair<int, int>>, double, HashPairACO> pheromone_map;
 
         for (int iteration = 0; iteration < iterations; ++iteration)
         {
-            std::unordered_map<std::pair<std::pair<int, int>, std::pair<int, int>>, double, HashPair> pheromone_delta;
+            std::unordered_map<std::pair<std::pair<int, int>, std::pair<int, int>>, double, HashPairACO> pheromone_delta;
 
             for (int ant = 0; ant < num_ants; ++ant)
             {
                 std::pair<int, int> pre = {-1, -1};
                 std::pair<int, int> current = start;
                 std::vector<std::pair<int, int>> path = {current};
-                std::unordered_set<std::pair<std::pair<int, int>, std::pair<int, int>>, HashPair> used_trails;
+                std::unordered_set<std::pair<std::pair<int, int>, std::pair<int, int>>, HashPairACO> used_trails;
                 bool isDead = false;
                 while (current != end)
                 {
@@ -151,16 +142,16 @@ public:
         return std::make_pair(best_path, pheromone_map);
     }
 
-    std::pair<std::vector<std::pair<int, int>>, std::unordered_map<std::pair<std::pair<int, int>, std::pair<int, int>>, double, HashPair>>
+    std::pair<std::vector<std::pair<int, int>>, std::unordered_map<std::pair<std::pair<int, int>, std::pair<int, int>>, double, HashPairACO>>
     solve_parallel(Maze &maze, std::pair<int, int> start, std::pair<int, int> end)
     {
         std::vector<std::pair<int, int>> best_path;
         int best_path_length = INT_MAX;
-        std::unordered_map<std::pair<std::pair<int, int>, std::pair<int, int>>, double, HashPair> pheromone_map;
+        std::unordered_map<std::pair<std::pair<int, int>, std::pair<int, int>>, double, HashPairACO> pheromone_map;
 
         for (int iteration = 0; iteration < iterations; ++iteration)
         {
-            std::unordered_map<std::pair<std::pair<int, int>, std::pair<int, int>>, double, HashPair> pheromone_delta;
+            std::unordered_map<std::pair<std::pair<int, int>, std::pair<int, int>>, double, HashPairACO> pheromone_delta;
 #pragma omp parallel for
             for (int ant = 0; ant < num_ants; ++ant)
             {
@@ -168,7 +159,7 @@ public:
                 std::pair<int, int> pre = {-1, -1};
                 std::pair<int, int> current = start;
                 std::vector<std::pair<int, int>> path = {current};
-                std::unordered_set<std::pair<std::pair<int, int>, std::pair<int, int>>, HashPair> used_trails;
+                std::unordered_set<std::pair<std::pair<int, int>, std::pair<int, int>>, HashPairACO> used_trails;
                 bool isDead = false;
                 while (current != end)
                 {
@@ -277,52 +268,52 @@ public:
     }
 };
 
-int main()
-{
-    Maze myMaze = {
-        {false, false, false, false, false, false, false, false},
-        {false, false, false, false, false, false, false, false},
-        {false, false, false, false, false, false, false, false},
-        {false, false, false, false, false, false, false, false},
-        {false, false, false, false, false, false, false, false},
-        {false, false, false, false, false, false, false, false},
-        {false, false, false, false, false, false, false, false},
-        {false, false, false, false, false, false, false, false},
-    };
-    myMaze.print();
+// int main()
+// {
+//     Maze myMaze = {
+//         {false, false, false, false, false, false, false, false},
+//         {false, false, false, false, false, false, false, false},
+//         {false, false, false, false, false, false, false, false},
+//         {false, false, false, false, false, false, false, false},
+//         {false, false, false, false, false, false, false, false},
+//         {false, false, false, false, false, false, false, false},
+//         {false, false, false, false, false, false, false, false},
+//         {false, false, false, false, false, false, false, false},
+//     };
+//     myMaze.print();
 
-    std::pair<int, int> start = {0, 0};
-    std::pair<int, int> end = {7, 7};
+//     std::pair<int, int> start = {0, 0};
+//     std::pair<int, int> end = {7, 7};
 
-    ACO myACO;
+//     ACO myACO;
 
-    auto start1 = std::chrono::high_resolution_clock::now();
-    auto result1 = myACO.solve_serial(myMaze, start, end);
-    auto end1 = std::chrono::high_resolution_clock::now();
-    std::chrono::duration<double> duration1 = end1 - start1;
-    std::cout << "Thời gian thực hiện tuần tự: " << duration1.count() << " giây\n";
+//     auto start1 = std::chrono::high_resolution_clock::now();
+//     auto result1 = myACO.solve_serial(myMaze, start, end);
+//     auto end1 = std::chrono::high_resolution_clock::now();
+//     std::chrono::duration<double> duration1 = end1 - start1;
+//     std::cout << "Thời gian thực hiện tuần tự: " << duration1.count() << " giây\n";
 
-    // Print path
-    std::cout << "Path: ";
-    for (const auto &point : result1.first)
-    {
-        std::cout << "(" << point.first << ", " << point.second << ") ";
-    }
-    std::cout << std::endl;
+//     // Print path
+//     std::cout << "Path: ";
+//     for (const auto &point : result1.first)
+//     {
+//         std::cout << "(" << point.first << ", " << point.second << ") ";
+//     }
+//     std::cout << std::endl;
 
-    auto start2 = std::chrono::high_resolution_clock::now();
-    auto result2 = myACO.solve_parallel(myMaze, start, end);
-    auto end2 = std::chrono::high_resolution_clock::now();
-    std::chrono::duration<double> duration2 = end2 - start2;
-    std::cout << "Thời gian thực hiện song song: " << duration2.count() << " giây\n";
+//     auto start2 = std::chrono::high_resolution_clock::now();
+//     auto result2 = myACO.solve_parallel(myMaze, start, end);
+//     auto end2 = std::chrono::high_resolution_clock::now();
+//     std::chrono::duration<double> duration2 = end2 - start2;
+//     std::cout << "Thời gian thực hiện song song: " << duration2.count() << " giây\n";
 
-    // Print path
-    std::cout << "Path: ";
-    for (const auto &point : result2.first)
-    {
-        std::cout << "(" << point.first << ", " << point.second << ") ";
-    }
-    std::cout << std::endl;
+//     // Print path
+//     std::cout << "Path: ";
+//     for (const auto &point : result2.first)
+//     {
+//         std::cout << "(" << point.first << ", " << point.second << ") ";
+//     }
+//     std::cout << std::endl;
 
-    std::cout << "Speed Up: " << duration1.count() / duration2.count() << " lần" << std::endl;
-}
+//     std::cout << "Speed Up: " << duration1.count() / duration2.count() << " lần" << std::endl;
+// }

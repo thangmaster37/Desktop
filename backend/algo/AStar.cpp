@@ -1,3 +1,4 @@
+#pragma once
 #include <unordered_map>
 #include <iostream>
 #include <vector>
@@ -10,8 +11,8 @@
 
 class AStar
 {
-private:
-    struct HashPair
+public:
+    struct HashPairAStar
     {
         template <class T1, class T2>
         std::size_t operator()(const std::pair<T1, T2> &p) const
@@ -24,8 +25,9 @@ private:
         }
     };
 
-public:
-    std::pair<std::vector<std::pair<int, int>>, std::unordered_map<std::pair<int, int>, std::pair<int, int>, HashPair>>
+    AStar() {}
+
+    std::pair<std::vector<std::pair<int, int>>, std::unordered_map<std::pair<int, int>, std::pair<int, int>, HashPairAStar>>
     solve_serial(Maze &maze, std::pair<int, int> start, std::pair<int, int> end)
     {
         auto heuristic = [](std::pair<int, int> p1, std::pair<int, int> p2)
@@ -46,7 +48,7 @@ public:
 
         open.push(std::make_tuple(heuristic(start, end), heuristic(start, end), start));
 
-        std::unordered_map<std::pair<int, int>, std::pair<int, int>, HashPair> a_path;
+        std::unordered_map<std::pair<int, int>, std::pair<int, int>, HashPairAStar> a_path;
 
         while (!open.empty())
         {
@@ -75,7 +77,7 @@ public:
             }
         }
 
-        std::unordered_map<std::pair<int, int>, std::pair<int, int>, HashPair> fwd_path;
+        std::unordered_map<std::pair<int, int>, std::pair<int, int>, HashPairAStar> fwd_path;
         auto cell = end;
         std::vector<std::pair<int, int>> path = {end};
 
@@ -89,41 +91,41 @@ public:
         return std::make_pair(path, fwd_path);
     }
 
-    // std::pair<std::vector<std::pair<int, int>>, std::unordered_map<std::pair<int, int>, std::pair<int, int>, HashPair>>
+    // std::pair<std::vector<std::pair<int, int>>, std::unordered_map<std::pair<int, int>, std::pair<int, int>, HashPairAStar>>
     // solve_parallel(Maze &maze, std::pair<int, int> start, std::pair<int, int> end)
     // {
     //     // return std::make_pair(NULL, NULL);
     // }
 };
 
-int main()
-{
-    Maze myMaze({50, 50});
-    std::pair<std::pair<int, int>, std::pair<int, int>> startEnd = myMaze.selectStartAndEnd();
-    myMaze.print();
+// int main()
+// {
+//     Maze myMaze({50, 50});
+//     std::pair<std::pair<int, int>, std::pair<int, int>> startEnd = myMaze.selectStartAndEnd();
+//     myMaze.print();
 
-    AStar myAStar;
+//     AStar myAStar;
 
-    auto start = std::chrono::high_resolution_clock::now();
-    auto result = myAStar.solve_serial(myMaze, startEnd.first, startEnd.second);
-    auto end = std::chrono::high_resolution_clock::now();
-    std::chrono::duration<double> duration = end - start;
-    std::cout << "Thời gian thực hiện tuần tự: " << duration.count() << " giây\n";
+//     auto start = std::chrono::high_resolution_clock::now();
+//     auto result = myAStar.solve_serial(myMaze, startEnd.first, startEnd.second);
+//     auto end = std::chrono::high_resolution_clock::now();
+//     std::chrono::duration<double> duration = end - start;
+//     std::cout << "Thời gian thực hiện tuần tự: " << duration.count() << " giây\n";
 
-    // Print path
-    std::cout << "Path: ";
-    for (const auto &point : result.first)
-    {
-        std::cout << "(" << point.first << ", " << point.second << ") ";
-    }
-    std::cout << std::endl;
+//     // Print path
+//     std::cout << "Path: ";
+//     for (const auto &point : result.first)
+//     {
+//         std::cout << "(" << point.first << ", " << point.second << ") ";
+//     }
+//     std::cout << std::endl;
 
-    // Print map
-    std::cout << "Map: ";
-    for (const auto &point : result.second)
-    {
-        std::cout << "[ (" << point.first.first << ", " << point.first.second << ") : (" << point.second.first << ", " << point.second.second << ") ]";
-    }
-    std::cout << std::endl;
-    return 0;
-}
+//     // Print map
+//     std::cout << "Map: ";
+//     for (const auto &point : result.second)
+//     {
+//         std::cout << "[ (" << point.first.first << ", " << point.first.second << ") : (" << point.second.first << ", " << point.second.second << ") ]";
+//     }
+//     std::cout << std::endl;
+//     return 0;
+// }

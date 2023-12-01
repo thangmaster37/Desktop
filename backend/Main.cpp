@@ -19,13 +19,12 @@ private:
     std::vector<std::pair<Object, bool>> objects;
     std::unordered_map<std::pair<int, int>, std::pair<int, int>, AStar::HashPairAStar> aStarPath;
     std::unordered_map<std::pair<std::pair<int, int>, std::pair<int, int>>, double, ACO::HashPairACO> acoMap;
-    std::pair<double, double> result;
-    // <time from start to end; percent reached end point>
+    std::pair<double, double> result; // <time from start to end; percent reached end point>
 
 public:
     Problem(std::pair<int, int> shape, int numberObject)
     {
-        maze(shape);
+        maze = Maze(shape);
         startEnd = maze.selectStartAndEnd();
         std::cout << "Create maze and start-end point successful" << std::endl;
         for (int i = 0; i < numberObject; ++i)
@@ -46,25 +45,37 @@ public:
         std::cout << "Got ACO's pheromone map in serial way" << std::endl;
     }
 
-    void preDyMazeParallel(AStar astar, ACO aco)
-    {
-        // Use A* fine optimize path - return map
-        aStarPath = astar.solve_parallel(maze, startEnd.first, startEnd.second).second;
-        std::cout << "Got A*'s optimize path in parallel way" << std::endl;
-        // Use ACO get pheromone map - return map
-        acoMap = aco.solve_parallel(maze, startEnd.first, startEnd.second).second;
-        std::cout << "Got ACO's pheromone map in parallel way" << std::endl;
-    }
+    // void preDyMazeParallel(AStar astar, ACO aco)
+    // {
+    //     // Use A* fine optimize path - return map
+    //     aStarPath = astar.solve_parallel(maze, startEnd.first, startEnd.second).second;
+    //     std::cout << "Got A*'s optimize path in parallel way" << std::endl;
+    //     // Use ACO get pheromone map - return map
+    //     acoMap = aco.solve_parallel(maze, startEnd.first, startEnd.second).second;
+    //     std::cout << "Got ACO's pheromone map in parallel way" << std::endl;
+    // }
 
     // Algorithms
-    bool noMorePath()
+    std::vector<std::pair<Object, bool>> getObjects()
     {
-        return false;
+        return objects;
     }
 
-    bool allReachTarget()
+    Maze getMaze()
     {
-        return false;
+        return maze;
+    }
+
+    bool stopCondition()
+    {
+        for (auto object : objects)
+        {
+            if (object.second == false)
+            {
+                return false;
+            }
+        }
+        return true;
     }
 
     void getChoice(std::pair<Object, bool> object)
@@ -78,6 +89,14 @@ public:
         std::vector<double> probities(neighbors.size());
         for (int i = 0; i < neighbors.size(); ++i)
         {
+            if (neighbors[i] == startEnd.second)
+            {
+                // Object get target point
+                object.first.move(neighbors[i]);
+                object.first.gotTarget();
+                object.second = true; // Object got target point
+                return;
+            }
             srand(time(NULL));
             if (aStarPath.find(object.first.currentPoint())->second == neighbors[i])
             {
@@ -91,10 +110,9 @@ public:
         auto maxProbityIndex = std::max_element(probities.begin(), probities.end()) - probities.begin();
         object.first.move(neighbors[maxProbityIndex]);
     }
-}
+};
 
-int
-main()
+int main()
 {
     // 0. Create maze with custom size. Choose start and end point
     std::pair<int, int> shape = {5, 5};
@@ -110,14 +128,15 @@ main()
     // +    All object reached the target <-> every object have getTarget property = true
     bool noPath = false;
     bool allReached = false;
-    while (!noPath && !allReached)
+    while (problem.stopCondition())
     {
         // Each object consider it's choice
-        for (int i = 0; i < numberObject; ++i)
+        for (auto object : problem.getObjects())
         {
-            objects[i].
+            problem.getChoice(object);
         }
-        break;
+        problem.getMaze().changeMaze(0.03, 0);
+        problem.getMaze().print();
     }
     return 0;
 }

@@ -32,8 +32,8 @@ private:
     }
 
 public:
-    Maze() {}
-    
+    Maze() {}   // default constructor - don't delete or Main.cpp will crash
+
     Maze(std::pair<int, int> shape, double obstacle_prob = 0.3)
     {
         rows = shape.first;
@@ -56,6 +56,13 @@ public:
         this->maze = maze;
         rows = maze.size();
         cols = maze.at(0).size();
+    }
+
+    void config(std::pair<int, int> shape, double obstacle_prob = 0.3)
+    {
+        rows = shape.first;
+        cols = shape.second;
+        generate(obstacle_prob);
     }
 
     int getHeight()

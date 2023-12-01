@@ -10,6 +10,8 @@ private:
     bool getTarget;
 
 public:
+    // Object() {}     // don't delete this or Main.cpp be crash
+
     Object(std::pair<int, int> start) {
         current = start;
         lengthPath = 0;
@@ -31,7 +33,8 @@ public:
         getTarget = true;
     }
 
-    std::pair<int, int> currentPoint() {
+    // constexpr return value when compile
+    constexpr std::pair<int, int> currentPoint() {
         return current;
     }
 

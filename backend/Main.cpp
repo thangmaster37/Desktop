@@ -4,6 +4,7 @@
 #include <utility>
 #include <bits/stdc++.h> // find max element of a array: *max_element(a.begin(), a.end());
 #include <cstdlib>       // create random value: srand(time(NULL)); int answer = std::rand() % 20; - create a random value from 0 to 20
+#include <algorithm>     // find index of max element in vector
 
 #include "Maze.cpp"
 #include "Object.cpp"
@@ -78,16 +79,17 @@ public:
         for (int i = 0; i < neighbors.size(); ++i)
         {
             srand(time(NULL));
-            if (aStarPath.find(object.first.currentPoint()) -> second == neighbors[i])
+            if (aStarPath.find(object.first.currentPoint())->second == neighbors[i])
             {
                 // The way go to neighbor is a part of aStarPath
                 probities[i] += std::rand() % 100 * 100;
             }
             // if (acoMap.find(object.currentPoint(), neighbors[i]) != acoMap.end()){
-            probities[i] += std::rand() % 200 * (acoMap.find(std::pair<object.first.currentPoint(), neighbors[i]>) -> second);
+            probities[i] += std::rand() % 200 * (acoMap.find(std::pair<object.first.currentPoint(), neighbors[i]>)->second);
             // }
         }
-
+        auto maxProbityIndex = std::max_element(probities.begin(), probities.end()) - probities.begin();
+        object.first.move(neighbors[maxProbityIndex]);
     }
 }
 

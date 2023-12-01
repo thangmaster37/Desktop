@@ -61,8 +61,8 @@ public:
         std::vector<std::vector<int>> g_score(maze.getHeight(), std::vector<int>(maze.getWidth(), INT_MAX));
         g_score[start.first][start.second] = 0;
 
-        std::vector<std::vector<int>> f_score(maze.getHeight(), std::vector<int>(maze.getWidth(), INT_MAX));
-        f_score[start.first][start.second] = heuristic(start, end);
+        // std::vector<std::vector<int>> f_score(maze.getHeight(), std::vector<int>(maze.getWidth(), INT_MAX));
+        // f_score[start.first][start.second] = heuristic(start, end);
 
         std::priority_queue<std::tuple<int, int, std::pair<int, int>>,
                             std::vector<std::tuple<int, int, std::pair<int, int>>>,
@@ -90,10 +90,10 @@ public:
                 int temp_g_score = g_score[current.first][current.second] + 1;
                 int temp_f_score = temp_g_score + heuristic(neighbor, end);
 
-                if (temp_f_score < f_score[neighbor.first][neighbor.second])
+                if (temp_g_score < g_score[neighbor.first][neighbor.second])
                 {
                     g_score[neighbor.first][neighbor.second] = temp_g_score;
-                    f_score[neighbor.first][neighbor.second] = temp_f_score;
+                    // f_score[neighbor.first][neighbor.second] = temp_f_score;
                     open.push(std::make_tuple(temp_f_score, heuristic(neighbor, end), neighbor));
                     a_path[neighbor] = current;
                 }
@@ -118,7 +118,6 @@ private:
     std::vector<std::tuple<int, int, std::pair<int, int>>>
     start_expand(Maze &maze, std::pair<int, int> start, std::pair<int, int> end,
                  std::vector<std::vector<int>> &g_score,
-                 std::vector<std::vector<int>> &f_score,
                  std::unordered_map<std::pair<int, int>, std::pair<int, int>, HashPairAStar> &a_path,
                  int num_threads)
     {
@@ -147,10 +146,10 @@ private:
                 int temp_g_score = g_score[current.first][current.second] + 1;
                 int temp_f_score = temp_g_score + heuristic(neighbor, end);
 
-                if (temp_f_score < f_score[neighbor.first][neighbor.second])
+                if (temp_g_score < g_score[neighbor.first][neighbor.second])
                 {
                     g_score[neighbor.first][neighbor.second] = temp_g_score;
-                    f_score[neighbor.first][neighbor.second] = temp_f_score;
+                    // f_score[neighbor.first][neighbor.second] = temp_f_score;
                     open.push(std::make_tuple(temp_f_score, heuristic(neighbor, end), neighbor));
                     a_path[neighbor] = current;
                     if (open.size() == num_threads)
@@ -180,15 +179,15 @@ public:
         std::vector<std::vector<int>> g_score(maze.getHeight(), std::vector<int>(maze.getWidth(), INT_MAX));
         g_score[start.first][start.second] = 0;
 
-        std::vector<std::vector<int>> f_score(maze.getHeight(), std::vector<int>(maze.getWidth(), INT_MAX));
-        f_score[start.first][start.second] = heuristic(start, end);
+        // std::vector<std::vector<int>> f_score(maze.getHeight(), std::vector<int>(maze.getWidth(), INT_MAX));
+        // f_score[start.first][start.second] = heuristic(start, end);
 
         std::unordered_map<std::pair<int, int>, std::pair<int, int>, HashPairAStar> a_path;
 
         std::atomic<int> open_node_num;
         thread_state *thread_array;
 
-        auto node_list = start_expand(maze, start, end, g_score, f_score, a_path, num_threads);
+        auto node_list = start_expand(maze, start, end, g_score, a_path, num_threads);
 
         const int busy_threshold = 100;
 
@@ -238,7 +237,7 @@ public:
 #pragma omp parallel
         {
             std::vector<std::vector<int>> g_value(g_score);
-            std::vector<std::vector<int>> f_value(f_score);
+            // std::vector<std::vector<int>> f_value(f_score);
             int id = omp_get_thread_num();
 
             const int DELTA_NODE_FLUSH_PERIOD = 10;
@@ -370,10 +369,10 @@ public:
                     int temp_g_value = g_value[current_node.first][current_node.second] + 1;
                     int temp_f_value = temp_g_value + heuristic(neighbor, end);
 
-                    if (temp_f_value < f_value[neighbor.first][neighbor.second])
+                    if (temp_g_value < g_value[neighbor.first][neighbor.second])
                     {
                         g_value[neighbor.first][neighbor.second] = temp_g_value;
-                        f_value[neighbor.first][neighbor.second] = temp_f_value;
+                        // f_value[neighbor.first][neighbor.second] = temp_f_value;
                         thread_array[id].open_list.push({temp_f_value, heuristic(neighbor, end), neighbor});
                         thread_array[id].a_path[neighbor] = current_node;
                         delta_node_num += 1;
@@ -386,46 +385,24 @@ public:
 };
 int main()
 {
-    Maze myMaze({50, 50});
-    std::pair<std::pair<int, int>, std::pair<int, int>> startEnd = myMaze.selectStartAndEnd();
-    std::pair<int, int> startPos = startEnd.first;
-    std::pair<int, int> endPos = startEnd.second;
+    // Maze myMaze({50, 50});
+    // std::pair<std::pair<int, int>, std::pair<int, int>> startEnd = myMaze.selectStartAndEnd();
+    // std::pair<int, int> startPos = startEnd.first;
+    // std::pair<int, int> endPos = startEnd.second;
 
-    // Maze myMaze = {
-    //     {false, false, false, false, false, false, false, false},
-    //     {false, false, false, false, false, false, false, false},
-    //     {false, false, false, false, false, false, false, false},
-    //     {false, false, false, false, false, false, false, false},
-    //     {false, false, false, false, false, false, false, false},
-    //     {false, false, false, false, false, false, false, false},
-    //     {false, false, false, false, false, false, false, false},
-    //     {false, false, false, false, false, false, false, false},
-    //     {false, false, false, false, false, false, false, false},
-    //     {false, false, false, false, false, false, false, false},
-    //     {false, false, false, false, false, false, false, false},
-    //     {false, false, false, false, false, false, false, false},
-    //     {false, false, false, false, false, false, false, false},
-    //     {false, false, false, false, false, false, false, false},
-    //     {false, false, false, false, false, false, false, false},
-    //     {false, false, false, false, false, false, false, false},
-    //     {false, false, false, false, false, false, false, false},
-    //     {false, false, false, false, false, false, false, false},
-    //     {false, false, false, false, false, false, false, false},
-    //     {false, false, false, false, false, false, false, false},
-    //     {false, false, false, false, false, false, false, false},
-    //     {false, false, false, false, false, false, false, false},
-    //     {false, false, false, false, false, false, false, false},
-    //     {false, false, false, false, false, false, false, false},
-    //     {false, false, false, false, false, false, false, false},
-    //     {false, false, false, false, false, false, false, false},
-    //     {false, false, false, false, false, false, false, false},
-    //     {false, false, false, false, false, false, false, false},
-    //     {false, false, false, false, false, false, false, false},
-    //     {false, false, false, false, false, false, false, false}};
-    // // myMaze.print();
+    Maze myMaze = {
+        {false, false, false, false, false, false, false, false},
+        {false, false, false, false, false, false, false, false},
+        {false, false, false, false, false, false, false, false},
+        {false, false, false, false, false, false, false, false},
+        {false, false, false, false, false, false, false, false},
+        {false, false, false, false, false, false, false, false},
+        {false, false, false, false, false, false, false, false},
+        {false, false, false, false, false, false, false, false}};
+    // myMaze.print();
 
-    // std::pair<int, int> startPos = {0, 0};
-    // std::pair<int, int> endPos = {29, 7};
+    std::pair<int, int> startPos = {0, 0};
+    std::pair<int, int> endPos = {7, 7};
 
     AStar myAStar;
 

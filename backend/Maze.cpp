@@ -32,6 +32,8 @@ private:
     }
 
 public:
+    Maze() {}
+    
     Maze(std::pair<int, int> shape, double obstacle_prob = 0.3)
     {
         rows = shape.first;

@@ -225,7 +225,7 @@ int main() {
     std::cout << time.getTimeAStarSerial() << "s" << "\n";
     // std::cout << time.getTimeAStarParallel() << "\n";
     std::cout << time.getTimeACOSerial() << "s" << "\n";
-    std::cout << time.getTimeACOParallel() << "s" << std::endl;
+    // std::cout << time.getTimeACOParallel() << "s" << std::endl;
     
 
     Memory_Algorithm memory;
@@ -236,7 +236,7 @@ int main() {
     std::cout << memory.getMemoryAStarSerial() << "MB" << std::endl;
     // std::cout << memory.getMemoryAStarParallel() << "MB" << std::endl;
     std::cout << memory.getMemoryACOSerial() << "MB" << std::endl;
-    std::cout << memory.getMemoryACOParallel() << "MB" << std::endl;
+    // std::cout << memory.getMemoryACOParallel() << "MB" << std::endl;
 
     return 0;
 }

@@ -2,42 +2,120 @@
 // #pragma once
 #include <vector>
 #include <utility>
+#include <bits/stdc++.h> // find max element of a array: *max_element(a.begin(), a.end());
+#include <cstdlib>       // create random value: srand(time(NULL)); int answer = std::rand() % 20; - create a random value from 0 to 20
+
 #include "Maze.cpp"
 #include "Object.cpp"
 #include "algo/AStar.cpp"
 #include "algo/ACO.cpp"
 
-// Thuật toán
-
-int main()
+class Problem
 {
-    // 0. Prepare maze
-    // Khởi tạo maze với kích thước mong muốn, chọn điểm bắt đầu - kết thúc trong maze
-    std::pair<int, int> shape = {15, 15};
-    Maze maze(shape);
-    std::pair<std::pair<int, int>, std::pair<int, int>> startEnd = maze.selectStartAndEnd();
+private:
+    Maze maze;
+    std::pair<std::pair<int, int>, std::pair<int, int>> startEnd;
+    std::vector<std::pair<Object, bool>> objects;
+    std::unordered_map<std::pair<int, int>, std::pair<int, int>, AStar::HashPairAStar> aStarPath;
+    std::unordered_map<std::pair<std::pair<int, int>, std::pair<int, int>>, double, ACO::HashPairACO> acoMap;
+    std::pair<double, double> result;
+    // <time from start to end; percent reached end point>
 
-    // Khởi tạo các đối tượng bắt đầu di chuyển
-    int numberObject = 50;
-    std::vector<Object> objects;
-    for (int i = 0; i < numberObject; ++i)
+public:
+    Problem(std::pair<int, int> shape, int numberObject)
     {
-        Object object(startEnd.first);
-        objects.push_back(object);
+        maze(shape);
+        startEnd = maze.selectStartAndEnd();
+        std::cout << "Create maze and start-end point successful" << std::endl;
+        for (int i = 0; i < numberObject; ++i)
+        {
+            Object object(startEnd.first);
+            objects.push_back(std::make_pair(object, false)); // object hadn't dead yet
+        }
+        std::cout << "Create objects successful" << std::endl;
     }
 
-    // 1. Prepare work on static maze 
+    void preDyMazeSerial(AStar astar, ACO aco)
+    {
+        // Use A* fine optimize path - return map
+        aStarPath = astar.solve_serial(maze, startEnd.first, startEnd.second).second;
+        std::cout << "Got A*'s optimize path in serial way" << std::endl;
+        // Use ACO get pheromone map - return map
+        acoMap = aco.solve_serial(maze, startEnd.first, startEnd.second).second;
+        std::cout << "Got ACO's pheromone map in serial way" << std::endl;
+    }
+
+    void preDyMazeParallel(AStar astar, ACO aco)
+    {
+        // Use A* fine optimize path - return map
+        aStarPath = astar.solve_parallel(maze, startEnd.first, startEnd.second).second;
+        std::cout << "Got A*'s optimize path in parallel way" << std::endl;
+        // Use ACO get pheromone map - return map
+        acoMap = aco.solve_parallel(maze, startEnd.first, startEnd.second).second;
+        std::cout << "Got ACO's pheromone map in parallel way" << std::endl;
+    }
+
+    // Algorithms
+    bool noMorePath()
+    {
+        return false;
+    }
+
+    bool allReachTarget()
+    {
+        return false;
+    }
+
+    void getChoice(std::pair<Object, bool> object)
+    {
+        std::vector<std::pair<int, int>> neighbors = maze.getNeighbors(object.first.currentPoint());
+        if (neighbors.size() == 0)
+        {
+            object.second = true; // Object dead
+            return;
+        }
+        std::vector<double> probities(neighbors.size());
+        for (int i = 0; i < neighbors.size(); ++i)
+        {
+            srand(time(NULL));
+            if (aStarPath.find(object.first.currentPoint()) -> second == neighbors[i])
+            {
+                // The way go to neighbor is a part of aStarPath
+                probities[i] += std::rand() % 100 * 100;
+            }
+            // if (acoMap.find(object.currentPoint(), neighbors[i]) != acoMap.end()){
+            probities[i] += std::rand() % 200 * (acoMap.find(std::pair<object.first.currentPoint(), neighbors[i]>) -> second);
+            // }
+        }
+
+    }
+}
+
+int
+main()
+{
+    // 0. Create maze with custom size. Choose start and end point
+    std::pair<int, int> shape = {5, 5};
+    int numberObject = 50;
+    Problem problem(shape, numberObject);
+    // 1. Prepare work on static maze
     AStar astar;
     ACO aco;
-    // Dùng AStar tìm đường tối ưu - hàm trả về lấy map
-    std::unordered_map<std::pair<int, int>, std::pair<int, int>, AStar::HashPairAStar> aStarPath = astar.solve_serial(maze, startEnd.first, startEnd.second).second;
-    // Dùng ACO tìm pheromone map - hàm trả về lấy map
-    std::unordered_map<std::pair<std::pair<int, int>, std::pair<int, int>>, double, ACO::HashPairACO> acoMap = aco.solve_serial(maze, startEnd.first, startEnd.second).second;
-    
-    // 2.
-    // Start main problem in dynamic maze
-    
-
-
+    problem.preDyMazeSerial(astar, aco);
+    // 2. Start main problem in dynamic maze
+    // Condition to stop while loop:
+    // +    All maze have no more path to go <-> every object that haven't reach target yet have the neighbors list = {}
+    // +    All object reached the target <-> every object have getTarget property = true
+    bool noPath = false;
+    bool allReached = false;
+    while (!noPath && !allReached)
+    {
+        // Each object consider it's choice
+        for (int i = 0; i < numberObject; ++i)
+        {
+            objects[i].
+        }
+        break;
+    }
     return 0;
 }

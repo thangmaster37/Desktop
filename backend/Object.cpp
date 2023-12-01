@@ -1,5 +1,6 @@
 #pragma once
 #include <iostream>
+#include <vector>
 
 class Object
 {
@@ -19,6 +20,7 @@ public:
         // Khi sử dụng cần đảm bảo trước sử dụng point là hàng xóm của current 
         // Tránh trường hợp dịch chuyển tức thời 
         current = point;
+        ++lengthPath;
     }
 
     bool isTarget() {
@@ -27,5 +29,13 @@ public:
 
     void gotTarget() {
         getTarget = true;
+    }
+
+    std::pair<int, int> currentPoint() {
+        return current;
+    }
+
+    int length() {
+        return lengthPath;
     }
 };

@@ -100,6 +100,7 @@ public:
                     while (true)
                     {
                         nextMove = distribution(gen);
+                        // if (neighbors.size() > 1 && neighbors[nextMove] != pre)
                         if (neighbors.size() > 1)
                         {
                             if (neighbors[nextMove] != pre)
@@ -209,6 +210,7 @@ public:
                     while (true)
                     {
                         nextMove = distribution(gen);
+                        // if (neighbors.size() > 1 && neighbors[nextMove] != pre)
                         if (neighbors.size() > 1)
                         {
                             if (neighbors[nextMove] != pre)

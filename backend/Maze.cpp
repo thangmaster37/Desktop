@@ -109,9 +109,9 @@ public:
         return std::make_pair(start, end);
     }
 
-    bool changeMaze(double prob_false_to_true, double prob_true_to_false)
+    void changeMaze(double prob_false_to_true, double prob_true_to_false)
     {
-        int is_dead_maze = 0;
+        // int is_dead_maze = 0;
         for (int i = 0; i < rows; ++i)
         {
             for (int j = 0; j < cols; ++j)
@@ -123,19 +123,19 @@ public:
                     {
                         maze[i][j] = true;
                     }
-                    else
-                    {
-                        is_dead_maze += 1;
-                    }
+                    // else
+                    // {
+                    //     is_dead_maze += 1;
+                    // }
                 }
                 else if (maze[i][j] && random_value < prob_true_to_false)
                 {
                     maze[i][j] = false;
-                    is_dead_maze += 1;
+                    // is_dead_maze += 1;
                 }
             }
         }
-        return is_dead_maze == 0;
+        // return is_dead_maze == 0;
     }
 
     Maze copy()
@@ -180,7 +180,7 @@ public:
 
 // int main()
 // {
-//     Maze myMaze({5, 5});
+//     Maze myMaze = Maze({5, 5});
 //     // Maze myMaze = {{false, false, true}, {false, true, false}, {false, false, false}};
 //     std::cout << "The origen maze..." << std::endl;
 //     myMaze.print();

@@ -2,7 +2,7 @@
 // #pragma once
 #include <vector>
 #include <utility>
-#include <bits/stdc++.h> // find max element of a array: *max_element(a.begin(), a.end());
+// #include <bits/stdc++.h> // find max element of a array: *max_element(a.begin(), a.end());
 #include <cstdlib>       // create random value: srand(time(NULL)); int answer = std::rand() % 20; - create a random value from 0 to 20
 #include <algorithm>     // find index of max element in vector
 
@@ -13,7 +13,7 @@
 
 class Problem
 {
-private:
+public:
     Maze maze;
     std::pair<std::pair<int, int>, std::pair<int, int>> startEnd;
     std::vector<std::pair<Object, bool>> objects;
@@ -45,15 +45,15 @@ public:
         std::cout << "Got ACO's pheromone map in serial way" << std::endl;
     }
 
-    // void preDyMazeParallel(AStar astar, ACO aco)
-    // {
-    //     // Use A* fine optimize path - return map
-    //     aStarPath = astar.solve_parallel(maze, startEnd.first, startEnd.second).second;
-    //     std::cout << "Got A*'s optimize path in parallel way" << std::endl;
-    //     // Use ACO get pheromone map - return map
-    //     acoMap = aco.solve_parallel(maze, startEnd.first, startEnd.second).second;
-    //     std::cout << "Got ACO's pheromone map in parallel way" << std::endl;
-    // }
+    void preDyMazeParallel(AStar astar, ACO aco)
+    {
+        // Use A* fine optimize path - return map
+        aStarPath = astar.solve_serial(maze, startEnd.first, startEnd.second).second;
+        std::cout << "Got A*'s optimize path in parallel way" << std::endl;
+        // Use ACO get pheromone map - return map
+        acoMap = aco.solve_parallel(maze, startEnd.first, startEnd.second).second;
+        std::cout << "Got ACO's pheromone map in parallel way" << std::endl;
+    }
 
     // Algorithms
     std::vector<std::pair<Object, bool>> getObjects()
@@ -110,6 +110,7 @@ public:
         }
         auto maxProbityIndex = std::max_element(probities.begin(), probities.end()) - probities.begin();
         object.first.move(neighbors[maxProbityIndex]);
+        std::cout << object.first.currentPoint().first << "-" << object.first.currentPoint().second << " " << object.second << " " << object.first.length() << std::endl;
     }
 };
 
@@ -127,16 +128,14 @@ int main()
     // Condition to stop while loop:
     // +    All maze have no more path to go <-> every object that haven't reach target yet have the neighbors list = {}
     // +    All object reached the target <-> every object have getTarget property = true
-    bool noPath = false;
-    bool allReached = false;
-    while (problem.stopCondition())
+    while (!problem.stopCondition())
     {
         // Each object consider it's choice
         for (auto object : problem.getObjects())
         {
-            problem.getChoice(object);
+            problem.getChoice(object);  // ? why doesn't object move
         }
-        problem.getMaze().changeMaze(0.03, 0);
+        problem.getMaze().changeMaze(0.3, 0);   // ? why doesn't maze change
         problem.getMaze().print();
     }
     return 0;

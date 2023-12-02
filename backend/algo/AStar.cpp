@@ -8,6 +8,7 @@
 #include <chrono>
 #include <atomic>
 #include <omp.h>
+#include <climits>
 #include "../Maze.cpp"
 
 // class thread_state

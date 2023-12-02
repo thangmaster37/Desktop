@@ -293,27 +293,32 @@ public:
 //     std::chrono::duration<double> duration1 = end1 - start1;
 //     std::cout << "Thời gian thực hiện tuần tự: " << duration1.count() << " giây\n";
 
-//     // Print path
-//     std::cout << "Path: ";
-//     for (const auto &point : result1.first)
-//     {
-//         std::cout << "(" << point.first << ", " << point.second << ") ";
+//     // // Print path
+//     // std::cout << "Path: ";
+//     // for (const auto &point : result1.first)
+//     // {
+//     //     std::cout << "(" << point.first << ", " << point.second << ") ";
+//     // }
+//     // std::cout << std::endl;
+
+//     // auto start2 = std::chrono::high_resolution_clock::now();
+//     // auto result2 = myACO.solve_parallel(myMaze, start, end);
+//     // auto end2 = std::chrono::high_resolution_clock::now();
+//     // std::chrono::duration<double> duration2 = end2 - start2;
+//     // std::cout << "Thời gian thực hiện song song: " << duration2.count() << " giây\n";
+
+//     // // Print path
+//     // std::cout << "Path: ";
+//     // for (const auto &point : result2.first)
+//     // {
+//     //     std::cout << "(" << point.first << ", " << point.second << ") ";
+//     // }
+//     // std::cout << std::endl;
+
+//     // std::cout << "Speed Up: " << duration1.count() / duration2.count() << " lần" << std::endl;
+
+//     // Print map 
+//     for (auto path : result1.second){
+//         std::cout << path.first.first.first << "-" << path.first.first.second << " " << path.first.second.first << "-" << path.first.second.second << " : " << path.second << "\n";
 //     }
-//     std::cout << std::endl;
-
-//     auto start2 = std::chrono::high_resolution_clock::now();
-//     auto result2 = myACO.solve_parallel(myMaze, start, end);
-//     auto end2 = std::chrono::high_resolution_clock::now();
-//     std::chrono::duration<double> duration2 = end2 - start2;
-//     std::cout << "Thời gian thực hiện song song: " << duration2.count() << " giây\n";
-
-//     // Print path
-//     std::cout << "Path: ";
-//     for (const auto &point : result2.first)
-//     {
-//         std::cout << "(" << point.first << ", " << point.second << ") ";
-//     }
-//     std::cout << std::endl;
-
-//     std::cout << "Speed Up: " << duration1.count() / duration2.count() << " lần" << std::endl;
 // }

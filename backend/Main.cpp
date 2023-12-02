@@ -103,9 +103,10 @@ public:
                 // The way go to neighbor is a part of aStarPath
                 probities[i] += std::rand() % 100 * 100;
             }
-            // if (acoMap.find(object.currentPoint(), neighbors[i]) != acoMap.end()){
-            probities[i] += std::rand() % 200 * (acoMap.find(std::pair<object.first.currentPoint(), neighbors[i]>)->second);
-            // }
+            if (acoMap.find(std::make_pair(object.first.currentPoint(), neighbors.at(i))) != acoMap.end())
+            {
+                probities[i] += std::rand() % 200 * (acoMap.find(std::make_pair(object.first.currentPoint(), neighbors.at(i)))->second);
+            }
         }
         auto maxProbityIndex = std::max_element(probities.begin(), probities.end()) - probities.begin();
         object.first.move(neighbors[maxProbityIndex]);
@@ -115,8 +116,8 @@ public:
 int main()
 {
     // 0. Create maze with custom size. Choose start and end point
-    std::pair<int, int> shape = {5, 5};
-    int numberObject = 50;
+    std::pair<int, int> shape = {3, 3};
+    int numberObject = 5;
     Problem problem(shape, numberObject);
     // 1. Prepare work on static maze
     AStar astar;

@@ -33,7 +33,7 @@ public:
         getTarget = true;
     }
 
-    // constexpr return value when compile
+    // constexpr return value when compile to make can use operator[]
     constexpr std::pair<int, int> currentPoint() {
         return current;
     }

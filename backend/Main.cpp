@@ -115,14 +115,6 @@ public:
                 probities[i] += ((double)rand() / RAND_MAX) * (acoMap.find(std::make_pair(object.first.currentPoint(), neighbors.at(i)))->second);
                 std::cout << "Calculate probities with ACO \n";
             }
-            // if (aStarPath.find(object.first.currentPoint())->second == neighbors.at(i))
-            // {
-            //     // The way go to neighbor is a part of aStarPath
-            //     probities[i] *= ((double)rand() / RAND_MAX + 1);
-            //     std::cout << "Calculate probities with A* \n";
-            // } else {
-            //     std::cout << "Not in A* \n";
-            // }
             auto it = aStarPath.find(object.first.currentPoint());
 
             if (it != aStarPath.end())

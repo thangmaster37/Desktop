@@ -106,17 +106,43 @@ public:
                 object.first.move(neighbors[i]);
                 object.first.gotTarget();
                 object.second = true; // Object got target point
+                std::cout << "Got target \n";
                 std::cout << object.first.currentPoint().first << "-" << object.first.currentPoint().second << " " << object.second << " <-> " << object.first.isTarget() << " " << object.first.length() << std::endl;
                 return;
             }
             if (acoMap.find(std::make_pair(object.first.currentPoint(), neighbors.at(i))) != acoMap.end())
             {
                 probities[i] += ((double)rand() / RAND_MAX) * (acoMap.find(std::make_pair(object.first.currentPoint(), neighbors.at(i)))->second);
+                std::cout << "Calculate probities with ACO \n";
             }
-            if (aStarPath.find(object.first.currentPoint())->second == neighbors[i])
+            // if (aStarPath.find(object.first.currentPoint())->second == neighbors.at(i))
+            // {
+            //     // The way go to neighbor is a part of aStarPath
+            //     probities[i] *= ((double)rand() / RAND_MAX + 1);
+            //     std::cout << "Calculate probities with A* \n";
+            // } else {
+            //     std::cout << "Not in A* \n";
+            // }
+            auto it = aStarPath.find(object.first.currentPoint());
+
+            if (it != aStarPath.end())
             {
-                // The way go to neighbor is a part of aStarPath
-                probities[i] *= ((double)rand() / RAND_MAX + 1);
+                if (it->second == neighbors.at(i))
+                {
+                    // Code to handle the case where the comparison is true
+                    probities[i] *= ((double)rand() / RAND_MAX + 1);
+                    std::cout << "Calculate probities with A* \n";
+                }
+                else
+                {
+                    // Code to handle the case where the comparison is false
+                    std::cout << "Neighbor is not in A* path \n";
+                }
+            }
+            else
+            {
+                // Code to handle the case where the key is not found in aStarPath
+                std::cout << "Current point is not in A* path \n";
             }
         }
         auto maxProbityIndex = std::max_element(probities.begin(), probities.end()) - probities.begin();
@@ -129,9 +155,10 @@ int main()
 {
     srand(time(NULL));
     // 0. Create maze with custom size. Choose start and end point
-    std::pair<int, int> shape = {15, 15};
-    int numberObject = 3;
+    std::pair<int, int> shape = {30, 30};
+    int numberObject = 100;
     Problem problem(shape, numberObject);
+    std::cout << "The origin maze \n";
     problem.getMaze().print();
     std::cout << problem.getStatEnd().first.first << "-" << problem.getStatEnd().first.second << " " << problem.getStatEnd().second.first << "-" << problem.getStatEnd().second.second << std::endl;
     // 1. Prepare work on static maze
@@ -150,13 +177,16 @@ int main()
             problem.getChoice(object);
         }
         problem.getMaze().changeMaze(0.01, 0.0);
-        problem.getMaze().print();
+        // problem.getMaze().print();
     }
 
     std::cout << "RESULT: \n";
+    int numberGotTarget = 0;
+    problem.getMaze().print();
     for (auto &object : problem.getObjects())
     {
-        std::cout << object.first.currentPoint().first << "-" << object.first.currentPoint().second << " " << object.second << " <-> " << object.first.isTarget() << " " << object.first.length() << std::endl;
+
+        // std::cout << object.first.currentPoint().first << "-" << object.first.currentPoint().second << " " << object.second << " <-> " << object.first.isTarget() << " " << object.first.length() << std::endl;
     }
 
     return 0;

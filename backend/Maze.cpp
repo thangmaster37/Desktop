@@ -34,7 +34,7 @@ private:
 public:
     Maze() {}   // default constructor - don't delete or Main.cpp will crash
 
-    Maze(std::pair<int, int> shape, double obstacle_prob = 0.3)
+    Maze(std::pair<int, int> shape, double obstacle_prob = 0.1)
     {
         rows = shape.first;
         cols = shape.second;
@@ -108,6 +108,10 @@ public:
 
         return std::make_pair(start, end);
     }
+
+    // bool exceptPoint(int i, int j) {
+    //     return 
+    // }
 
     void changeMaze(double prob_false_to_true, double prob_true_to_false)
     {

@@ -3,8 +3,8 @@
 #include <vector>
 #include <utility>
 // #include <bits/stdc++.h> // find max element of a array: *max_element(a.begin(), a.end());
-#include <cstdlib>       // create random value: srand(time(NULL)); int answer = std::rand() % 20; - create a random value from 0 to 20
-#include <algorithm>     // find index of max element in vector
+#include <cstdlib>   // create random value: srand(time(NULL)); int answer = std::rand() % 20; - create a random value from 0 to 20
+#include <algorithm> // find index of max element in vector
 
 #include "Maze.cpp"
 #include "Object.cpp"
@@ -35,7 +35,7 @@ public:
         std::cout << "Create objects successful" << std::endl;
     }
 
-    void preDyMazeSerial(AStar astar, ACO aco)
+    void preDyMazeSerial(AStar &astar, ACO &aco)
     {
         // Use A* fine optimize path - return map
         aStarPath = astar.solve_serial(maze, startEnd.first, startEnd.second).second;
@@ -45,7 +45,7 @@ public:
         std::cout << "Got ACO's pheromone map in serial way" << std::endl;
     }
 
-    void preDyMazeParallel(AStar astar, ACO aco)
+    void preDyMazeParallel(AStar &astar, ACO &aco)
     {
         // Use A* fine optimize path - return map
         aStarPath = astar.solve_serial(maze, startEnd.first, startEnd.second).second;
@@ -56,19 +56,24 @@ public:
     }
 
     // Algorithms
-    std::vector<std::pair<Object, bool>> getObjects()
+    std::vector<std::pair<Object, bool>> &getObjects()
     {
         return objects;
     }
 
-    Maze getMaze()
+    Maze &getMaze()
     {
         return maze;
     }
 
+    std::pair<std::pair<int, int>, std::pair<int, int>> &getStatEnd()
+    {
+        return startEnd;
+    }
+
     bool stopCondition()
     {
-        for (auto object : objects)
+        for (auto &object : objects)
         {
             if (object.second == false)
             {
@@ -78,48 +83,57 @@ public:
         return true;
     }
 
-    void getChoice(std::pair<Object, bool> object)
+    void getChoice(std::pair<Object, bool> &object)
     {
         std::vector<std::pair<int, int>> neighbors = maze.getNeighbors(object.first.currentPoint());
-        if (neighbors.size() == 0)
+        if (neighbors.empty())
         {
             object.second = true; // Object dead
             return;
+        }
+        std::cout << neighbors.size() << std::endl;
+        for (auto &neighbor : neighbors)
+        {
+            std::cout << neighbor.first << " " << neighbor.second << std::endl;
         }
         std::vector<double> probities(neighbors.size());
         for (int i = 0; i < neighbors.size(); ++i)
         {
             if (neighbors[i] == startEnd.second)
+            // if (neighbors.at(i).first == startEnd.second.first && neighbors.at(i).second == startEnd.second.second)
             {
                 // Object get target point
                 object.first.move(neighbors[i]);
                 object.first.gotTarget();
                 object.second = true; // Object got target point
+                std::cout << object.first.currentPoint().first << "-" << object.first.currentPoint().second << " " << object.second << " <-> " << object.first.isTarget() << " " << object.first.length() << std::endl;
                 return;
-            }
-            srand(time(NULL));
-            if (aStarPath.find(object.first.currentPoint())->second == neighbors[i])
-            {
-                // The way go to neighbor is a part of aStarPath
-                probities[i] += std::rand() % 100 * 100;
             }
             if (acoMap.find(std::make_pair(object.first.currentPoint(), neighbors.at(i))) != acoMap.end())
             {
-                probities[i] += std::rand() % 200 * (acoMap.find(std::make_pair(object.first.currentPoint(), neighbors.at(i)))->second);
+                probities[i] += ((double)rand() / RAND_MAX) * (acoMap.find(std::make_pair(object.first.currentPoint(), neighbors.at(i)))->second);
+            }
+            if (aStarPath.find(object.first.currentPoint())->second == neighbors[i])
+            {
+                // The way go to neighbor is a part of aStarPath
+                probities[i] *= ((double)rand() / RAND_MAX + 1);
             }
         }
         auto maxProbityIndex = std::max_element(probities.begin(), probities.end()) - probities.begin();
         object.first.move(neighbors[maxProbityIndex]);
-        std::cout << object.first.currentPoint().first << "-" << object.first.currentPoint().second << " " << object.second << " " << object.first.length() << std::endl;
+        std::cout << object.first.currentPoint().first << "-" << object.first.currentPoint().second << " " << object.second << " <-> " << object.first.isTarget() << " " << object.first.length() << std::endl;
     }
 };
 
 int main()
 {
+    srand(time(NULL));
     // 0. Create maze with custom size. Choose start and end point
-    std::pair<int, int> shape = {3, 3};
-    int numberObject = 5;
+    std::pair<int, int> shape = {15, 15};
+    int numberObject = 3;
     Problem problem(shape, numberObject);
+    problem.getMaze().print();
+    std::cout << problem.getStatEnd().first.first << "-" << problem.getStatEnd().first.second << " " << problem.getStatEnd().second.first << "-" << problem.getStatEnd().second.second << std::endl;
     // 1. Prepare work on static maze
     AStar astar;
     ACO aco;
@@ -131,12 +145,19 @@ int main()
     while (!problem.stopCondition())
     {
         // Each object consider it's choice
-        for (auto object : problem.getObjects())
+        for (auto &object : problem.getObjects())
         {
-            problem.getChoice(object);  // ? why doesn't object move
+            problem.getChoice(object);
         }
-        problem.getMaze().changeMaze(0.3, 0);   // ? why doesn't maze change
+        problem.getMaze().changeMaze(0.01, 0.0);
         problem.getMaze().print();
     }
+
+    std::cout << "RESULT: \n";
+    for (auto &object : problem.getObjects())
+    {
+        std::cout << object.first.currentPoint().first << "-" << object.first.currentPoint().second << " " << object.second << " <-> " << object.first.isTarget() << " " << object.first.length() << std::endl;
+    }
+
     return 0;
 }
